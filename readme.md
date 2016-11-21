@@ -8,3 +8,23 @@ Allows you to create a grid of items inside the CMS. Has the ability to:
 
 ![display of what the tiles look like inside SilverStripe](images/1.png)
 
+# install 
+
+**composer require otago/tiles**
+
+# Usage
+
+```
+class MyPage extends Page {
+
+	static $has_many = array(
+		'Tiles' => 'Tile'
+	);
+
+	function getCMSFields() {
+		$fields = parent::getCMSFields();
+		$fields->addFieldToTab('Root.Main', TileField::create('Tiles', 'Tiles'));
+		return $fields;
+	}
+}
+```

@@ -1,5 +1,5 @@
 {
-	"name": "otago/moodle",
+	"name": "otago/tiles",
 	"description": "Tile CMS field",
 	"type": "silverstripe-module",
 	"keywords": ["silverstripe", "Tiles", "CMS Field"],

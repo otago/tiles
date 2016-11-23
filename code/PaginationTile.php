@@ -5,7 +5,7 @@
  */
 class PaginationTile extends Tile {
 
-	protected static $singular_name = "A page that can be placed in serries";
+	protected static $singular_name = "Pagination Tile Pages";
 	protected static $allowed_sizes = array(
 		'1x1'
 	);
@@ -56,7 +56,16 @@ class PaginationTile extends Tile {
 	}
 
 	public function Preview() {
-		return $this->PageContent;
+		if($this->Content) {
+			return $this->Content;
+		}
+		if($this->PageContent) {
+			return $this->PageContent;
+		}
+		if($this->ImageID) {
+			return $this->Image()->SetRatioSize(230, 170)->getTag();
+		}
+		return 'Pagination tile requires page content or an image.';
 	}
 
 	public function getLink() {
@@ -80,7 +89,9 @@ class PaginationTile extends Tile {
 	 */
 	public function getContent() {
 		if($this->BypassContent) {
-			$items = PaginationTile::get()->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID'=>$this->ParentID, 'Name'=>$this->Name))->toArray();
+			$tiles = PaginationTile::get()->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID'=>$this->ParentID, 'Name'=>$this->Name));
+			$tiles->sort(array('Row'=>'ASC', 'Col'=>'ASC'));
+			$items = $tiles->toArray();
 			
 			$selecteditem = null;
 			$previtem = null;

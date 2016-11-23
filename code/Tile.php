@@ -269,7 +269,7 @@ class Tile extends DataObject {
 			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
 				return DataObject::get_by_id('SiteTree', $this->ParentID)->canView();
 			} else {
-				if(! singleton($this->ParentClassName)) {
+				if(!$this->ParentClassName || !singleton($this->ParentClassName)) {
 					return true;
 				}
 				return singleton($this->ParentClassName)->canView($member);
@@ -337,7 +337,7 @@ class Tile extends DataObject {
 			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
 				return DataObject::get_by_id('SiteTree', $this->ParentID)->canEdit();
 			} else {
-				if(! singleton($this->ParentClassName)) {
+				if(!$this->ParentClassName || !singleton($this->ParentClassName)) {
 					return true;
 				}
 				return singleton($this->ParentClassName)->canEdit($member);

@@ -263,13 +263,16 @@ class Tile extends DataObject {
 
 		// check for inherit
 		if ($this->CanViewType == 'Inherit') {
-			if ($this->ParentID) {
-				if(!DataObject::get_by_id('SiteTree', $this->ParentID)) {
+			if(!$this->ParentID) {
+				return true;
+			}
+			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
+				return DataObject::get_by_id('SiteTree', $this->ParentID)->canView();
+			} else {
+				if(! singleton($this->ParentClassName)) {
 					return true;
 				}
-				return DataObject::get_by_id('SiteTree', $this->ParentID)->canView();
-			}else {
-				return SiteConfig::current_site_config()->canView($member);
+				return singleton($this->ParentClassName)->canView($member);
 			}
 		}
 
@@ -328,13 +331,16 @@ class Tile extends DataObject {
 
 		// check for inherit
 		if ($this->CanEditType == 'Inherit') {
-			if ($this->ParentID) {
-				if(!DataObject::get_by_id('SiteTree', $this->ParentID)) {
-					return true;
-				}
+			if(!$this->ParentID) {
+				return true;
+			}
+			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
 				return DataObject::get_by_id('SiteTree', $this->ParentID)->canEdit();
 			} else {
-				return SiteConfig::current_site_config()->canView($member);
+				if(! singleton($this->ParentClassName)) {
+					return true;
+				}
+				return singleton($this->ParentClassName)->canEdit($member);
 			}
 		}
 

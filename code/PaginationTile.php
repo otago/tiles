@@ -148,7 +148,13 @@ class PaginationTile extends Tile {
 	}
 
 	public function CustomBreadcrumbs($maxDepth = 20, $unlinked = false, $stopAtPageType = false, $showHidden = false) {
-		return $this->Controllers[0]->Breadcrumbs();
+		$pages = $this->Controllers[0]->getBreadcrumbItems($maxDepth, $stopAtPageType, $showHidden);
+		$pages->push($this);
+		$template = new SSViewer('BreadcrumbsTemplate');
+		return $template->process($this->customise(new ArrayData(array(
+			"Pages" => $pages,
+			"Unlinked" => $unlinked
+		))));
 	}
 	public function SubNavigation() {
 		if ($this->SubNavigationItems()->count() === 0) {

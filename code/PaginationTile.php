@@ -89,8 +89,9 @@ class PaginationTile extends Tile {
 	 */
 	public function getContent() {
 		if($this->BypassContent) {
-			$tiles = PaginationTile::get()->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID'=>$this->ParentID, 'Name'=>$this->Name));
-			$tiles->sort(array('Row'=>'ASC', 'Col'=>'ASC'));
+			$tiles = PaginationTile::get()
+						->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID'=>$this->ParentID, 'Name'=>$this->Name))
+						->sort(array('Row'=>'ASC', 'Col'=>'ASC'));
 			$items = $tiles->toArray();
 			
 			$selecteditem = null;

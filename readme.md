@@ -8,9 +8,11 @@ Allows you to create a grid of items inside the CMS. Has the ability to:
 
 ![display of what the tiles look like inside SilverStripe](images/1.png)
 
-# install 
+# Install 
 
-**composer require otago/tiles**
+```
+$composer require otago/tiles
+```
 
 # Usage
 

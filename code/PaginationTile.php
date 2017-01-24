@@ -22,8 +22,6 @@ class PaginationTile extends Tile {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
-		//$fields->removeByName('Content');
-
 		$fields->removeByName('TreeID');
 		$fields->fieldByName('Root.Main.URL')->setDescription('For external links');
 		$fields->fieldByName('Root.Main.PageContent')
@@ -31,7 +29,7 @@ class PaginationTile extends Tile {
 		$tree = new TreeDropdownField("TreeID", "Local page to link", "SiteTree");
 		$tree->setDescription('Select the same item twice to clear');
 		$fields->addFieldToTab('Root.Main', $tree);
-		
+
 		$imageupload = new UploadField('Image', 'Upload Image');
 		$fields->addFieldToTab('Root.Main', $imageupload);
 		$imageupload->setAllowedFileCategories('image');
@@ -50,19 +48,17 @@ class PaginationTile extends Tile {
 		$pagebanner->setDescription('Image displayed on the tile page');
 		$pagebanner->setFolderName('widgets');
 
-		
-		
 		return $fields;
 	}
 
 	public function Preview() {
-		if($this->Content) {
+		if ($this->Content) {
 			return $this->Content;
 		}
-		if($this->PageContent) {
+		if ($this->PageContent) {
 			return $this->PageContent;
 		}
-		if($this->ImageID) {
+		if ($this->ImageID) {
 			return $this->Image()->SetRatioSize(230, 170)->getTag();
 		}
 		return 'Pagination tile requires page content or an image.';
@@ -81,28 +77,28 @@ class PaginationTile extends Tile {
 		}
 		return $this->URL ? : $this->url;
 	}
-	
+
 	/**
 	 * Build a page content up if navigating to the tile page
 	 * @return HTML
 	 * @throws SS_HTTPResponse_Exception
 	 */
 	public function getContent() {
-		if($this->BypassContent) {
+		if ($this->BypassContent) {
 			$tiles = PaginationTile::get()
-						->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID'=>$this->ParentID, 'Name'=>$this->Name))
-						->sort(array('Row'=>'ASC', 'Col'=>'ASC'));
+					->filter(array('ParentClassName' => $this->ParentClassName, 'ParentID' => $this->ParentID, 'Name' => $this->Name))
+					->sort(array('Row' => 'ASC', 'Col' => 'ASC'));
 			$items = $tiles->toArray();
-			
+
 			$selecteditem = null;
 			$previtem = null;
 			$nextitem = null;
-			
+
 			foreach ($items as $key => $item) {
-				if((!$item->pagecontent && !$item->PageContent) && !$item->ImageID) {
+				if ((!$item->pagecontent && !$item->PageContent) && !$item->ImageID) {
 					unset($items[$key]);
 				}
-				if($item->URL) {
+				if ($item->URL) {
 					unset($items[$key]);
 				}
 			}
@@ -120,20 +116,17 @@ class PaginationTile extends Tile {
 			if (!$selecteditem) {
 				throw new SS_HTTPResponse_Exception('Please set Image or PageContent to create Page.');
 			} else {
-				$bannerimage = $selecteditem->PageBanner();
-				$prev = $previtem ? "tile?id=" . $previtem->ID : "";
-				$next = $nextitem ? "tile?id=" . $nextitem->ID : "";
-				$cr = '<span class="icon-ChevronRight" aria-hidden="true"></span>';
-				$cl = '<span class="icon-ChevronLeft" aria-hidden="true"></span>';
-
-				$links = '<a class="widgettiles__prev" href="' . Director::get_current_page()->Link() . $prev . '">' . ($prev ? $cl : "") . '</a>';
-				$mlinks = '<a class="widgettiles__next" href="' . Director::get_current_page()->Link() . $next . '">' . ($next ? $cr : "") . '</a>';
-				return '<div class="widgettiles">' . $links . $mlinks . '</div><div class="widgettiles__img">' . ($bannerimage ? $bannerimage->ScaleMaxWidth(948)->getTag() : '') . "</div>" . $selecteditem->PageContent;
+				return ArrayData::create(array(
+							'Prev' => $previtem,
+							'Next' => $nextitem,
+							'CurrentItem' => $selecteditem,
+							'Director::get_current_page()->Link()'
+						))->renderWith('PaginationTileNavigation');
 			}
 		}
 		return $this->getField('Content');
 	}
-	
+
 	public function Menu($Pos) {
 		$st = ModelAsController::controller_for(Page::create());
 		return $st->getMenu($Pos);
@@ -153,16 +146,16 @@ class PaginationTile extends Tile {
 		$pages->push($this);
 		$template = new SSViewer('BreadcrumbsTemplate');
 		return $template->process($this->customise(new ArrayData(array(
-			"Pages" => $pages,
-			"Unlinked" => $unlinked
+							"Pages" => $pages,
+							"Unlinked" => $unlinked
 		))));
 	}
+
 	public function SubNavigation() {
 		if ($this->SubNavigationItems()->count() === 0) {
 			return 'Hide navigation';
 		}
 		return '';
 	}
-	
 
 }

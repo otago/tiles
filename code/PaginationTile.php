@@ -120,7 +120,7 @@ class PaginationTile extends Tile {
 							'Prev' => $previtem,
 							'Next' => $nextitem,
 							'CurrentItem' => $selecteditem,
-							'Director::get_current_page()->Link()'
+							'Link' => Director::get_current_page()->Link()
 						))->renderWith('PaginationTileNavigation');
 			}
 		}

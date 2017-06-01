@@ -59,6 +59,9 @@ class PaginationTile extends Tile {
 			return $this->PageContent;
 		}
 		if ($this->ImageID) {
+			if(!$this->Image()->SetRatioSize(230, 170)) {
+				return 'resize failed';
+			}
 			return $this->Image()->SetRatioSize(230, 170)->getTag();
 		}
 		return 'Pagination tile requires page content or an image.';

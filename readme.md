@@ -30,3 +30,4 @@ class MyPage extends Page {
 	}
 }
 ```
+

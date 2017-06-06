@@ -98,7 +98,7 @@ class PaginationTile extends Tile {
 				if ((!$item->pagecontent && !$item->PageContent) && !$item->ImageID) {
 					unset($items[$key]);
 				}
-				if ($item->URL) {
+				if ($item->URL || $item->TreeID) {
 					unset($items[$key]);
 				}
 			}

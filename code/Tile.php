@@ -171,7 +171,7 @@ class Tile extends DataObject {
 	 * @return type
 	 */
 	public function forTemplate() {
-		return $this->renderWith($this->ClassName);
+		return $this->renderWith('Layout/'.$this->ClassName, $this->ClassName);
 	}
 
 	public function getSizex() {

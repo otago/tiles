@@ -22,16 +22,12 @@ class PaginationTile extends Tile {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
+		$fields->removeByName('URL');
 		$fields->removeByName('TreeID');
-		$fields->fieldByName('Root.Main.URL')->setDescription('For external links');
 		$fields->fieldByName('Root.Main.PageContent')
 				->setDescription('Ensure either an image or page content is set for to create its own page');
-		$tree = new TreeDropdownField("TreeID", "Local page to link", "SiteTree");
-		$tree->setDescription('Select the same item twice to clear');
-		$fields->addFieldToTab('Root.Main', $tree);
-
-		$imageupload = new UploadField('Image', 'Upload Image');
-		$fields->addFieldToTab('Root.Main', $imageupload);
+		$imageupload = new UploadField('Image', 'Tile Image');
+		$fields->addFieldToTab('Root.Main', $imageupload, 'Content');
 		$imageupload->setAllowedFileCategories('image');
 		$imageupload->setFolderName('tiles/photo');
 		$imageupload->setOverwriteWarning(false);
@@ -39,16 +35,29 @@ class PaginationTile extends Tile {
 		$imageupload->setDescription('Image that will be displayed on the tile. Required for its own page. 948 pixels wide');
 		$imageupload->setFolderName('widgets');
 
-		$pagebanner = new UploadField('PageBanner', 'Upload Page Banner');
-		$fields->addFieldToTab('Root.Main', $pagebanner);
+		$pagebanner = new UploadField('PageBanner', 'Page Banner Image');
+		$fields->addFieldToTab('Root.Main', $pagebanner, 'PageContent');
 		$pagebanner->setAllowedFileCategories('image');
 		$pagebanner->setFolderName('tiles/photo');
 		$pagebanner->setOverwriteWarning(false);
 		$pagebanner->setAllowedMaxFileNumber(1);
 		$pagebanner->setDescription('Image displayed on the tile page');
 		$pagebanner->setFolderName('widgets');
+		
+		$fields->fieldByName('Root.Main.Content')
+				->setTitle('Tile Content');
 
 		return $fields;
+	}
+
+	public function getLink() {
+		if ($this->ParentObject() && $this->ParentObject()->Page()) {
+			if (trim(strip_tags($this->PageContent))) {
+				return Controller::join_links(Controller::curr()->Link(), 'tile', '?id=' . $this->ID);
+			}
+		}
+
+		return;
 	}
 
 	public function Preview() {
@@ -59,26 +68,12 @@ class PaginationTile extends Tile {
 			return $this->PageContent;
 		}
 		if ($this->ImageID) {
-			if(!$this->Image()->SetRatioSize(230, 170)) {
+			if (!$this->Image()->SetRatioSize(230, 170)) {
 				return 'resize failed';
 			}
 			return $this->Image()->SetRatioSize(230, 170)->getTag();
 		}
 		return 'Pagination tile requires page content or an image.';
-	}
-
-	public function getLink() {
-		if ($this->ParentObject() && $this->ParentObject()->Page()) {
-			if (trim(strip_tags($this->PageContent))) {
-				return Controller::join_links(Controller::curr()->Link(), 'tile', '?id=' . $this->ID);
-			}
-		}
-
-		$tid = $this->TreeID ? : $this->treeid;
-		if ($tid && SiteTree::get()->byID($tid)) {
-			return Controller::join_links(Director::absoluteBaseURL(), SiteTree::get()->byID($tid)->Link());
-		}
-		return $this->URL ? : $this->url;
 	}
 
 	/**

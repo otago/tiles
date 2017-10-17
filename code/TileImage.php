@@ -5,7 +5,7 @@
  * TileImage 
  */
 class TileImage extends Image {
-	public static $db = array(
+	private static $db = array(
 		'VideoURL' => 'Boolean', 
 		'LinkURL' => 'Text'
 	);

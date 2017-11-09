@@ -22,7 +22,8 @@ class Tile extends DataObject {
 		'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
 		'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
 		'Version' => "Enum('Stage, Live', 'Stage')", // only used if the parent is versioned
-		'ParentClassName' => 'Text'
+		'ParentClassName' => 'Text',
+		'CustomTileClass' => 'Varchar(255)'
 	);
 	private static $has_one = array(
 		'ParentHolder' => 'SiteTree' // not used anymore

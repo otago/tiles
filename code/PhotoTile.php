@@ -9,7 +9,7 @@ class PhotoTile extends Tile {
 		'Image' => 'Image'
 	);
 	
-	protected static $allowed_sizes = array('1x1', '1x2', '2x2', '3x2');
+	protected static $allowed_sizes = array('1x1', '1x2', '2x1', '2x2', '3x2');
 	
 	protected static $singular_name = "Photo tile";
 	

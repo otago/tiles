@@ -5,7 +5,7 @@
  */
 class LinkTile extends Tile {
 
-	protected static $singular_name = "Link Tile Pages";
+	protected static $singular_name = "Link Tile";
 	protected static $allowed_sizes = array(
 		'1x1'
 	);
@@ -26,7 +26,6 @@ class LinkTile extends Tile {
 		$tree->setDescription('Select the same item twice to clear');
 		$fields->addFieldToTab('Root.Main', $tree);
 
-		$fields->removeByName('Content');
 		$imageupload = new UploadField('Image', 'Upload Image');
 		$fields->addFieldToTab('Root.Main', $imageupload);
 		$imageupload->setAllowedFileCategories('image');

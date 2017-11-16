@@ -31,3 +31,12 @@ class MyPage extends Page {
 }
 ```
 
+## specifying types of tiles in field
+
+You can limit the CMS dropdown to a limited number of tiles. This is handy when you've have a page where you only want a certain type of tile. This is done by passing in the $dataList parameter: 
+
+```
+		$tile = DataObject::create(array('Name'=>'StaffHubResourceTile', 'NiceName' => StaffHubResourceTile::functionGetNiceName()));
+		
+		$fields->addFieldToTab('Root.Main', TileField::create('Tiles', 'Tiles', ArrayList::create(array($tile))));
+```

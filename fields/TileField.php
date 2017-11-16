@@ -229,6 +229,9 @@ class TileField extends TextField {
 	 * @return \ArrayList
 	 */
 	public function getTileTypes() {
+		if($this->list) {
+			return $this->list;
+		}
 		$Arraylist = ArrayList::create();
 
 		$dataClasses = ClassInfo::subclassesFor('Tile');

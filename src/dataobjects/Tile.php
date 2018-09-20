@@ -1,66 +1,65 @@
 <?php
 
+namespace OP;
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Group;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\ListboxField;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Member;
+use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\ORM\FieldType\DBField;
+use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 /**
  * 
  */
 class Tile extends DataObject {
 
-	protected static $allowed_sizes = array(
-		'1x1', '1x2', '1x3', '2x1', '2x2', '2x3', '3x1', '3x2', '3x3'
-	);
-	protected static $singular_name = "Generic Tile";
-	private static $db = array(
+	use Injectable;
+
+	// enable cascade publishing
+	private static $extensions = [
+		Versioned::class
+	];
+	private static $table_name = 'Tile';
+	private static $singular_name = "Generic Tile";
+	private static $db = [
 		'Color' => 'Text', // red, green blue etc.
 		'Content' => 'HTMLText', // text in the content field
 		'Row' => 'Int',
 		'Col' => 'Int',
 		'Sort' => 'Int', // calculated by TileField
-		'Size' => 'Text', // 1x1 etc. Should be a value from $allowed_sizes
-		'Name' => 'Text', // used in one-many relationships
-		'ParentID' => 'Int', // danger stupid hack
+		'Width' => 'Int',
+		'Height' => 'Int',
+		//..'Name' => 'Text', // used in one-many relationships
 		'Disabled' => 'Boolean',
 		'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
 		'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
-		'Version' => "Enum('Stage, Live', 'Stage')", // only used if the parent is versioned
-		'ParentClassName' => 'Text',
-		'CustomTileClass' => 'Varchar(255)'
-	);
-	private static $has_one = array(
-		'ParentHolder' => 'SiteTree' // not used anymore
-	);
-	private static $many_many = array(
-		'ViewerGroups' => 'Group',
-		'EditorGroups' => 'Group',
-	);
-	private static $defaults = array(
+	];
+	private static $has_one = [
+		'Parent' => TileElement::class
+	];
+	private static $many_many = [
+		'ViewerGroups' => Group::class,
+		'EditorGroups' => Group::class,
+	];
+	private static $defaults = [
 		'CanViewType' => 'Inherit',
 		'CanEditType' => 'Inherit'
-	);
+	];
+	protected static $maxheight = 2;
+	protected static $maxwidth = 2;
 
 	public function __construct($record = null, $isSingleton = false, $model = null) {
 		parent::__construct($record, $isSingleton, $model);
-	}
-
-	public function populateDefaults() {
-		$this->Size = current($this::$allowed_sizes);
-
-		parent::populateDefaults();
-	}
-
-	/**
-	 * this will allow the tile to be parented to data objects too
-	 * @param int $val
-	 */
-	public function setParentID($val) {
-		$this->setField('ParentHolderID', $val);
-		$this->setField('ParentID', $val);
-	}
-
-	/**
-	 * @returns a nice tanem
-	 */
-	public static function functionGetNiceName() {
-		return static::$singular_name;
 	}
 
 	/**
@@ -68,36 +67,42 @@ class Tile extends DataObject {
 	 * @return \FieldList
 	 */
 	public function getCMSFields() {
-		$fields = parent::getCMSFields();
-		$fields->removeByName('ParentID');
-		$fields->removeByName('Color');
-		$fields->removeByName('Row');
-		$fields->removeByName('Col');
-		$fields->removeByName('Sort');
-		$fields->removeByName('Name');
-		$fields->removeByName('ParentHolderID');
-		$fields->removeByName('ViewerGroups');
-		$fields->removeByName('EditorGroups');
-		$fields->removeByName('SliderTileID');
-		$fields->removeByName('ParentClassName');
-		
+		$fields = FieldList::create();
+		$fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
 
-		$parent = Tile::get()->byID($this->ParentID);
-
-		if (isset($parent) && ($parent->ClassName == 'SliderTile')) {
-			$fields->addFieldToTab('Root.Main', DropdownField::create('Size', 'Size', array($parent->Size => $parent->Size)), 'Content');
-		} else {
-			$fields->addFieldToTab('Root.Main', DropdownField::create('Size', 'Size', array_combine($this::$allowed_sizes, $this::$allowed_sizes)), 'Content');
-		}
-
-		if(class_exists('OpColorField')) {
-			$fields->addFieldToTab('Root.Main', OpColorField::create('Color', 'Color Override', $this->Color), 'Content');
-		}
-		$fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled', true), 'Content');
+		//if (class_exists('OpColorField')) {
+		//	$fields->addFieldToTab('Root.Main', OpColorField::create('Color', 'Color Override', $this->Color), 'Content');
+		//}
+		$fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
+		$fields->addFieldsToTab('Root.Main', HTMLEditorField::create('Content', 'Content'));
 
 		$fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
 
 		return $fields;
+	}
+
+	/**
+	 * how big this tile can grow side ways
+	 * @return int
+	 */
+	public function getMaxWidth() {
+		return self::$maxwidth;
+	}
+
+	/**
+	 * how tall this tile can get
+	 * @return int
+	 */
+	public function getMaxHeight() {
+		return self::$maxheight;
+	}
+
+	/**
+	 * X-Y format of this tile
+	 * @return string
+	 */
+	public function getSize() {
+		return $this->Width . '-' . $this->Height;
 	}
 
 	/**
@@ -115,24 +120,22 @@ class Tile extends DataObject {
 		asort($groupsMap);
 
 		$fields = FieldList::create(array(
-			$viewersOptionsField = new OptionsetField(
-			"CanViewType", _t('Tile.ACCESSHEADER', "Who can view this tile?")
-			),
-			$viewerGroupsField = ListboxField::create("ViewerGroups", _t('SiteTree.VIEWERGROUPS', "Viewer Groups"))
-			->setMultiple(true)
-			->setSource($groupsMap)
-			->setAttribute(
-			'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-			),
-			$editorsOptionsField = new OptionsetField(
-			"CanEditType", _t('Tile.EDITHEADER', "Who can edit this tile?")
-			),
-			$editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
-			->setMultiple(true)
-			->setSource($groupsMap)
-			->setAttribute(
-			'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-			)
+					$viewersOptionsField = new OptionsetField(
+					"CanViewType", _t('Tile.ACCESSHEADER', "Who can view this tile?")
+					),
+					$viewerGroupsField = ListboxField::create("ViewerGroups", _t('SiteTree.VIEWERGROUPS', "Viewer Groups"))
+					->setSource($groupsMap)
+					->setAttribute(
+					'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
+					),
+					$editorsOptionsField = new OptionsetField(
+					"CanEditType", _t('Tile.EDITHEADER', "Who can edit this tile?")
+					),
+					$editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
+					->setSource($groupsMap)
+					->setAttribute(
+					'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
+					)
 		));
 
 		$viewersOptionsSource = array();
@@ -172,17 +175,7 @@ class Tile extends DataObject {
 	 * @return type
 	 */
 	public function forTemplate() {
-		return $this->renderWith('Layout/'.$this->ClassName, $this->ClassName);
-	}
-
-	public function getSizex() {
-		$sizes = explode('x', $this->Size);
-		return $sizes[0];
-	}
-
-	public function getSizey() {
-		$sizes = explode('x', $this->Size);
-		return $sizes[1];
+		return $this->renderWith('Layout/' . $this->ClassName, $this->ClassName);
 	}
 
 	/**
@@ -194,34 +187,18 @@ class Tile extends DataObject {
 	}
 
 	/**
-	 * Returns a hex color so we can shade the background of each tile in the CMS
-	 * @return string hex code
-	 */
-	public function PreviewColor() {
-		$color = ColourSchemes::get()->filter(array('CSSColor' => $this->Color));
-
-		if (!$color || $color->count() == 0) {
-			return '';
-		}
-
-		return $color->first()->CSSHex;
-	}
-
-	/**
 	 * Validates the tile data object
 	 * @return A {@link ValidationResult} object
 	 */
 	public function validate() {
 		$result = parent::validate();
 
-		//Ensure that $this::allowed_sizes is in Tile::allowed_sizes
-		if (array_diff($this::$allowed_sizes, Tile::$allowed_sizes)) {
-			$result->error("Tile size inside $this::\$allowed_sizes does not exist in Tile::\$allowed_sizes");
+		if ($this->Height > $this::$maxheight) {
+			$result->error("Height of $this::\$maxheight exceeded");
 		}
 
-		//Ensure that $this->Size is in $this::$allowed_sizes
-		if (!in_array($this->Size, $this::$allowed_sizes)) {
-			$result->error('Tile size is not an allowed size');
+		if ($this->Width > $this::$maxwidth) {
+			$result->error("Width of $this::\$maxheight exceeded");
 		}
 
 		return $result;
@@ -264,13 +241,13 @@ class Tile extends DataObject {
 
 		// check for inherit
 		if ($this->CanViewType == 'Inherit') {
-			if(!$this->ParentID) {
+			if (!$this->ParentID) {
 				return true;
 			}
-			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
+			if (in_array($this->ParentClassName, ClassInfo::getValidSubClasses())) {
 				return DataObject::get_by_id('SiteTree', $this->ParentID)->canView();
 			} else {
-				if(!$this->ParentClassName || !singleton($this->ParentClassName)) {
+				if (!$this->ParentClassName || !singleton($this->ParentClassName)) {
 					return true;
 				}
 				return singleton($this->ParentClassName)->canView($member);
@@ -332,13 +309,13 @@ class Tile extends DataObject {
 
 		// check for inherit
 		if ($this->CanEditType == 'Inherit') {
-			if(!$this->ParentID) {
+			if (!$this->ParentID) {
 				return true;
 			}
-			if (in_array ($this->ParentClassName, ClassInfo::getValidSubClasses())) {
+			if (in_array($this->ParentClassName, ClassInfo::getValidSubClasses())) {
 				return DataObject::get_by_id('SiteTree', $this->ParentID)->canEdit();
 			} else {
-				if(!$this->ParentClassName || !singleton($this->ParentClassName)) {
+				if (!$this->ParentClassName || !singleton($this->ParentClassName)) {
 					return true;
 				}
 				return singleton($this->ParentClassName)->canEdit($member);
@@ -361,26 +338,85 @@ class Tile extends DataObject {
 		return false;
 	}
 
-	public function AllowedSizes() {
-		return $this::$allowed_sizes;
+	/**
+	 * get the width of this item (min of 1)
+	 * @return int
+	 */
+	public function getWidth() {
+		return max($this->getField('Width'), 1);
 	}
 
 	/**
-	 * If this object is versioned
-	 * @return type
+	 * get the height of this item (min of 1)
+	 * @return int
 	 */
-	public function isVersioned() {
-		$parentClass = $this->ParentClassName;
-		if($parentClass) {
-			$parent = $parentClass::get()->byId($this->ParentID);
-			return $parent ? $parent->has_extension('Versioned') : false;
-		}
-		return false;
+	public function getHeight() {
+		return max($this->getField('Height'), 1);
 	}
-	
-	public function ParentObject () {
-		$parentClass = $this->ParentClassName;
-		return $parentClass::get()->ByID($this->ParentID);
+
+	/**
+	 * takes in position x and y, and saves it
+	 * @param array $data
+	 */
+	public function writeRawArray($data) {
+		if (isset($data['x'])) {
+			$this->Row = (int) $data['x'];
+		}
+		if (isset($data['y'])) {
+			$this->Col = (int) $data['y'];
+		}
+		if (isset($data['w'])) {
+			$this->Width = (int) $data['w'];
+		}
+		if (isset($data['h'])) {
+			$this->Height = (int) $data['h'];
+		}
+		$this->write();
+	}
+
+	/**
+	 * takes in position x and y, and saves it
+	 * @param array $data
+	 */
+	public function generateRawArray() {
+		return array(
+			'i' => $this->ID,
+			'n' => $this->singular_name(),
+			'x' => (int) $this->Row,
+			'y' => (int) $this->Col,
+			'w' => (int) $this->getWidth(),
+			'h' => (int) $this->getHeight(),
+			'maxW' => $this->getMaxWidth(),
+			'maxH' => $this->getMaxHeight(),
+			'c' => $this->getTileColor(),
+			'p' => $this->getPreviewContent(),
+			'img' => $this->getPreviewImage(),
+			'disabled' => $this->Disabled
+		);
+	}
+
+	/**
+	 * if you specify a background color 
+	 * @return string
+	 */
+	public function getTileColor() {
+		return $this->Color ?: 'transparent';
+	}
+
+	/**
+	 * text to be inside the tile itself
+	 * @return string
+	 */
+	public function getPreviewContent() {
+		return DBField::create_field(DBHTMLText::class, $this->Content)->LimitCharacters(150);
+	}
+
+	/**
+	 * a preview image
+	 * @return Image|null
+	 */
+	public function getPreviewImage() {
+		return null;
 	}
 
 }

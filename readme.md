@@ -1,27 +1,58 @@
 # Tiling system for SilverStripe CMS
 
-Allows you to create a grid of items inside the CMS. Has the ability to:
+![display of what the tiles look like inside SilverStripe](images/preview.gif)
+
+Allows you to create an [elemental](https://github.com/dnadesign/silverstripe-elemental) grid inside SilverStripe. Features include:
 
 1. drag & reorder them inside the CMS
 2. easily create your own tiles
 3. delete and edit tiles easily
 
-![display of what the tiles look like inside SilverStripe](images/1.png)
+It also comes with some basic tiles out of the box. 
 
 # Install 
 
+Run this in your command line:
 ```
-$composer require otago/tiles
+composer require otago/tiles
 ```
+
+To expose the modules resouces:
+
+```
+composer vendor-expose
+```
+
+The module requires [elemental blocks](https://github.com/dnadesign/silverstripe-elemental). if you don't have this module, you'll be prompted on install.
+
+
+# build source
+
+```
+npm run watch
+```
+
+to get env vars on windows:
+```
+npm install -g win-node-env
+```
+
+This module uses fancy and modern react for rendering. So you know it's fast and snappy.
 
 # Usage
 
+After a composer install you'll have the tile module as an element. So you don't need to do anything (unless you've restricted the elements on each page).
+
+If you want to put tilefield directly on a page, you can do this too. The following example shows you how:
+
 ```
+use OP\TileField;
+
 class MyPage extends Page {
 
-	static $has_many = array(
-		'Tiles' => 'Tile'
-	);
+	static $has_many = [
+		'Tiles' => Tile:class
+	];
 
 	function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -30,6 +61,39 @@ class MyPage extends Page {
 	}
 }
 ```
+## allowing the user to specify how many columns they want
+
+You can provide an DataObject where the Cols val will be written to. so you can have 3,2 or however many cols you want wide:
+
+```
+
+use OP\TileField;
+
+class MyTilePage extends Page {
+	private static $db = [
+		'Cols' => 'Int'
+	];
+	private static $has_many = [
+		'Tiles' => Tile::class
+	];
+	private static $owns = [
+		'Tiles'
+	];
+	public function getCMSFields() {
+		$fields = parent::getCMSFields();
+		$tilefield = TileField::create('Tiles', 
+			'Tiles',
+			$this->Tiles(), 
+			null, 
+			$this // this var requires a db object Cols to remember how many cols it is wide
+		);
+		
+		$fields->addFieldToTab('Root.Main', $tilefield);
+		return $fields;
+	}
+}
+```
+
 
 ## specifying types of tiles in field
 
@@ -40,3 +104,4 @@ You can limit the CMS dropdown to a limited number of tiles. This is handy when 
 		
 		$fields->addFieldToTab('Root.Main', TileField::create('Tiles', 'Tiles', ArrayList::create(array($tile))));
 ```
+

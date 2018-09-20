@@ -1,5 +1,5 @@
 <div class="tile">
-    <div class="tile-$Size $CSSName">
+	<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
         <% if $Size = 2x2 %>
             $Image.croppedImage(469, 430)
         <% end_if %>

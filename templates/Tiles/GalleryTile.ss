@@ -1,5 +1,5 @@
 <div class="tile">
-<div class="tile-$Size $CSSName">
+<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
 	<ul>
 	<% loop Images %>
 	<li class="imageContainer <% if $First %>first<% else %>mid<% end_if %><% if $VideoURL %> videotile<% end_if %>" <% if $First %><% else %>style="display:none"<% end_if %>>

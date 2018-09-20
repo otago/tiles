@@ -18,6 +18,7 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+
 /**
  * 
  */
@@ -69,10 +70,6 @@ class Tile extends DataObject {
 	public function getCMSFields() {
 		$fields = FieldList::create();
 		$fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
-
-		//if (class_exists('OpColorField')) {
-		//	$fields->addFieldToTab('Root.Main', OpColorField::create('Color', 'Color Override', $this->Color), 'Content');
-		//}
 		$fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
 		$fields->addFieldsToTab('Root.Main', HTMLEditorField::create('Content', 'Content'));
 
@@ -175,7 +172,8 @@ class Tile extends DataObject {
 	 * @return type
 	 */
 	public function forTemplate() {
-		return $this->renderWith('Layout/' . $this->ClassName, $this->ClassName);
+		$shortname = (new \ReflectionClass($this))->getShortName();
+		return $this->renderWith(array('Tiles/' . $shortname, $shortname));
 	}
 
 	/**
@@ -183,7 +181,8 @@ class Tile extends DataObject {
 	 * @return string
 	 */
 	public function CSSName() {
-		return strtolower($this->ClassName);
+		$shortname = (new \ReflectionClass($this))->getShortName();
+		return strtolower($shortname);
 	}
 
 	/**

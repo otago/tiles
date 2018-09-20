@@ -25,6 +25,23 @@ composer vendor-expose
 
 The module requires [elemental blocks](https://github.com/dnadesign/silverstripe-elemental). if you don't have this module, you'll be prompted on install.
 
+# customise your tiles
+
+put your own templates in your themes/<themename>/templates/tilename.ss. For example,
+to make your own ContentTile in the simple theme, create a file in 
+**themes/simple/templates/Tiles/ContentTile.ss**
+
+```
+<div class="tile">
+<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
+	$Content
+</div>
+</div>
+```
+
+If you want to support MSIE, you can use the -ms-grid-row and -ms-grid-column CSS 
+values with $Col and $Row to have the grid display correctly. 
+
 
 # build source
 

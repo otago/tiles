@@ -23,19 +23,19 @@ To expose the modules resouces:
 composer vendor-expose
 ```
 
-The module requires [elemental blocks](https://github.com/dnadesign/silverstripe-elemental). if you don't have this module, you'll be prompted on install.
+The module requires [elemental blocks](https://github.com/dnadesign/silverstripe-elemental). If you don't have this module, you'll be prompted on install.
 
-# customise your tiles
+# Customise your tiles
 
-put your own templates in your themes/<themename>/templates/tilename.ss. For example,
+Put your own templates in your themes/\<themename\>/templates/Tiles/tilename.ss. For example,
 to make your own ContentTile in the simple theme, create a file in 
 **themes/simple/templates/Tiles/ContentTile.ss**
 
 ```
 <div class="tile">
-<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
-	$Content
-</div>
+	<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
+		$Content
+	</div>
 </div>
 ```
 
@@ -43,7 +43,9 @@ If you want to support MSIE, you can use the -ms-grid-row and -ms-grid-column CS
 values with $Col and $Row to have the grid display correctly. 
 
 
-# build source
+# Build source
+
+You'll need node 6. Boo.
 
 ```
 npm run watch
@@ -78,7 +80,7 @@ class MyPage extends Page {
 	}
 }
 ```
-## allowing the user to specify how many columns they want
+## Allowing the user to specify how many columns they want
 
 You can provide an DataObject where the Cols val will be written to. so you can have 3,2 or however many cols you want wide:
 
@@ -112,7 +114,7 @@ class MyTilePage extends Page {
 ```
 
 
-## specifying types of tiles in field
+## Specifying types of tiles in field
 
 You can limit the CMS dropdown to a limited number of tiles. This is handy when you've have a page where you only want a certain type of tile. This is done by passing in the $dataList parameter: 
 

@@ -1,7 +1,6 @@
 <?php
 
-namespace OP;
-
+namespace OP\Models;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Group;
 use SilverStripe\Forms\CheckboxField;
@@ -18,6 +17,7 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
+use OP\Elements\TileElement;
 
 /**
  * 

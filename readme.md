@@ -65,7 +65,7 @@ After a composer install you'll have the tile module as an element. So you don't
 If you want to put tilefield directly on a page, you can do this too. The following example shows you how:
 
 ```
-use OP\TileField;
+use OP\Fields\TileField;
 
 class MyPage extends Page {
 
@@ -86,7 +86,7 @@ You can provide an DataObject where the Cols val will be written to. so you can 
 
 ```
 
-use OP\TileField;
+use OP\Fields\TileField;
 
 class MyTilePage extends Page {
 	private static $db = [

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace OP;
+namespace OP\Models;
 use SilverStripe\Forms\TextField;
 
 /**

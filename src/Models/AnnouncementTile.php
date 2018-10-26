@@ -1,8 +1,7 @@
 <?php
 
-namespace OP;
+namespace OP\Models;
 
-use OP\Tile;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\DateField;
 

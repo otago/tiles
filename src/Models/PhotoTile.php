@@ -1,6 +1,6 @@
 <?php
 
-namespace OP;
+namespace OP\Models;
 use SilverStripe\Assets\Image;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Forms\LiteralField;

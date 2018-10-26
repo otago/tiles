@@ -1,6 +1,6 @@
 <?php
 
-namespace OP;
+namespace OP\Fields;
 
 use SilverStripe\Forms\FormField;
 use SilverStripe\Control\HTTPRequest;
@@ -14,6 +14,8 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use OP\Forms\TileFieldDetailForm;
+use OP\Models\Tile;
 
 /**
  * 
@@ -176,8 +178,8 @@ class TileField extends GridField {
 		}
 		$Arraylist = ArrayList::create();
 
-		$dataClasses = ClassInfo::subclassesFor('OP\Tile');
-
+		$dataClasses = ClassInfo::subclassesFor(Tile::class);
+		
 		foreach ($dataClasses as $key => $item) {
 			if ($key == "Tile") {
 				continue;

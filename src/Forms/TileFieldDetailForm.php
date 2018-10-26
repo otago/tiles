@@ -1,6 +1,6 @@
 <?php
 
-namespace OP;
+namespace OP\Forms;
 
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\RequiredFields;

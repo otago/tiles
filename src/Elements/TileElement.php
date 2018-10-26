@@ -1,10 +1,10 @@
 <?php
 
-namespace OP;
+namespace OP\Elements;
 
 use DNADesign\Elemental\Models\BaseElement;
-use OP\TileField;
-use OP\Tile;
+use OP\Fields\TileField;
+use OP\Models\Tile;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\Tab;

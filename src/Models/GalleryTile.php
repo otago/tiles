@@ -1,6 +1,6 @@
 <?php
 
-namespace OP;
+namespace OP\Models;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RelationEditor;

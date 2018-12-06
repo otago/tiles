@@ -124,3 +124,18 @@ You can limit the CMS dropdown to a limited number of tiles. This is handy when 
 		$fields->addFieldToTab('Root.Main', TileField::create('Tiles', 'Tiles', ArrayList::create(array($tile))));
 ```
 
+## upgrading
+
+Here's the modulelegacy.yml file to convert your tiles from 3 to 4:
+
+---
+Name: mymodulelegacy
+---
+SilverStripe\ORM\DatabaseAdmin:
+  classname_value_remapping:
+    GalleryTile: OP\Models\GalleryTile
+    ContentTile: OP\Models\ContentTile
+    LinkTile: OP\Models\LinkTile
+    AnnouncementTile: OP\Models\AnnouncementTile
+    PhotoTile: OP\Models\PhotoTile
+    Slide: OP\Models\Slide

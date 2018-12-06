@@ -127,7 +127,7 @@ You can limit the CMS dropdown to a limited number of tiles. This is handy when 
 ## upgrading
 
 Here's the modulelegacy.yml file to convert your tiles from 3 to 4:
-
+```
 ---
 Name: mymodulelegacy
 ---
@@ -139,3 +139,4 @@ SilverStripe\ORM\DatabaseAdmin:
     AnnouncementTile: OP\Models\AnnouncementTile
     PhotoTile: OP\Models\PhotoTile
     Slide: OP\Models\Slide
+```

@@ -227,6 +227,9 @@ class TileField extends GridField {
 	 */
 	public function getDataListJson() {
 		$retarray = array();
+		if(!$this->list) {
+			return json_encode($retarray);
+		}
 		foreach ($this->list as $item) {
 			if ($item instanceof DataObject && $item->hasMethod('generateRawArray')) {
 				$retarray[] = $item->generateRawArray();

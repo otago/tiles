@@ -16,6 +16,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use OP\Forms\TileFieldDetailForm;
 use OP\Models\Tile;
+use Exception;
 
 /**
  * 

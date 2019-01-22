@@ -1,0 +1,10 @@
+---
+Name: elementaltilesblockconfig
+---
+
+
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_javascript:
+    - 'otago/tiles:client/dist/js/bundle.js'
+  extra_requirements_css:
+    - 'otago/tiles:css/TileField.css'

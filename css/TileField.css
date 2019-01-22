@@ -53,6 +53,14 @@
 .tilefield__textinput{
 	margin: 0 0 20px
 }
+.tilefield__tileselect {
+    margin: 0 !important;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.tilefield__tileselect:focus {
+    outline: none;
+}
 
 
 .react-grid-layout {

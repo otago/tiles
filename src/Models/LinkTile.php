@@ -7,6 +7,8 @@ use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Control\Director;
+
 /**
  * A tile the holds an image, and an external or internal link to resource
  */

@@ -70,7 +70,7 @@ use OP\Fields\TileField;
 class MyPage extends Page {
 
 	static $has_many = [
-		'Tiles' => Tile:class
+		'Tiles' => Models\Tile::class
 	];
 
 	function getCMSFields() {

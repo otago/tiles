@@ -15,7 +15,7 @@ class PhotoTile extends Tile {
 	];
 	
 	private static $singular_name = "Photo tile";
-	
+	protected static $maxwidth = 3;
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		$fields->removeByName('Content');

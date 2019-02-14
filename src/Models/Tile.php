@@ -57,7 +57,7 @@ class Tile extends DataObject {
 		'CanEditType' => 'Inherit'
 	];
 	protected static $maxheight = 2;
-	protected static $maxwidth = 2;
+	protected static $maxwidth = 3;
 
 	public function __construct($record = null, $isSingleton = false, $model = null) {
 		parent::__construct($record, $isSingleton, $model);

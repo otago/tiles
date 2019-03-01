@@ -83,7 +83,7 @@ class Tile extends DataObject {
 	 * @return int
 	 */
 	public function getMaxWidth() {
-		return self::$maxwidth;
+		return $this::$maxwidth;
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Tile extends DataObject {
 	 * @return int
 	 */
 	public function getMaxHeight() {
-		return self::$maxheight;
+		return $this::$maxheight;
 	}
 
 	/**

@@ -193,11 +193,11 @@ class Tile extends DataObject {
 		$result = parent::validate();
 
 		if ($this->Height > $this::$maxheight) {
-			$result->error("Height of $this::\$maxheight exceeded");
+			$result->addError("Height of $this::\$maxheight exceeded" . $this->Height .' '. $this::$maxheight);
 		}
 
 		if ($this->Width > $this::$maxwidth) {
-			$result->error("Width of $this::\$maxheight exceeded");
+			$result->addError("Width of $this::\$maxheight exceeded");
 		}
 
 		return $result;

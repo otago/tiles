@@ -359,10 +359,10 @@ class Tile extends DataObject {
 	 */
 	public function writeRawArray($data) {
 		if (isset($data['x'])) {
-			$this->Row = (int) $data['x'];
+			$this->Col = (int) $data['x'];
 		}
 		if (isset($data['y'])) {
-			$this->Col = (int) $data['y'];
+			$this->Row = (int) $data['y'];
 		}
 		if (isset($data['w'])) {
 			$this->Width = (int) $data['w'];
@@ -381,8 +381,8 @@ class Tile extends DataObject {
 		return array(
 			'i' => $this->ID,
 			'n' => $this->singular_name(),
-			'x' => (int) $this->Row,
-			'y' => (int) $this->Col,
+			'x' => (int) $this->Col,
+			'y' => (int) $this->Row,
 			'w' => (int) $this->getWidth(),
 			'h' => (int) $this->getHeight(),
 			'maxW' => $this->getMaxWidth(),

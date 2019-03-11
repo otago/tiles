@@ -1,4 +1,4 @@
-<div class="tile tile-{$Width}x{$Height} tile__row-$Col tile__col-$Row">
+<div class="tile tile-{$Width}x{$Height} tile__row-$Row tile__col-$Col">
 <div class="tile__$CSSName <% if $Color %>$Color<% end_if %>">
 	<ul class="tile__gallerytilecontainer">
 	<% loop Slides %>

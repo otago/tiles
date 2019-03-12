@@ -126,7 +126,7 @@ You can limit the CMS dropdown to a limited number of tiles. This is handy when 
 
 ## upgrading
 
-Here's the modulelegacy.yml file to convert your tiles from 3 to 4:
+Here's the modulelegacy.yml file to convert your tiles from SS 3 to 4:
 ```yml
 ---
 Name: mymodulelegacy

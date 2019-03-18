@@ -47,11 +47,12 @@ class LinkTile extends Tile {
     }
 
     public function getPreviewImage() {
-        if (!$this->Image()->ThumbnailURL(230, 170)) {
+        if ($this->Tree && $this->Tree()->Title) {
             return null;
         }
         return $this->Image()->ThumbnailURL(230, 170);
     }
+
 
     public function getPreviewContent() {
         if (!$this->Tree()) {

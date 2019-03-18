@@ -2,13 +2,10 @@
 
 namespace OP\Elements;
 
+use SilverStripe\ORM\ArrayList;
 use DNADesign\Elemental\Models\BaseElement;
 use OP\Fields\TileField;
 use OP\Models\Tile;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\TextField;
 
 class TileElement extends BaseElement {
 
@@ -41,6 +38,18 @@ class TileElement extends BaseElement {
 
     public function getType() {
         return 'Tiles';
+    }
+    
+    public function SortedTiles () {
+        $retarray = [];
+        
+        foreach ($this->Tiles() as $tile) {
+            $sort = ($tile->Row * $this->Rows) + $tile->Col;
+            $tile->Sort = $sort;
+            $retarray[$sort] = $tile;
+        }
+        
+        return ArrayList::create($retarray)->Sort('Sort');
     }
 
 }

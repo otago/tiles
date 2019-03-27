@@ -14,6 +14,10 @@ class PhotoTile extends Tile {
 		'Image' => Image::class
 	];
 	
+    private static $owns = [
+        'Image'
+    ];
+	
 	private static $singular_name = "Photo tile";
 	
 	public function getCMSFields() {

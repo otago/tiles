@@ -28,6 +28,10 @@ class Slide extends DataObject {
 		'Thumbnail'
 	];
 	
+    private static $owns = [
+        'Image'
+    ];
+	
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
 		

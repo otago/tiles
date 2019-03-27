@@ -19,9 +19,6 @@ class LinkTile extends Tile {
 
     private static $table_name = 'LinkTile';
     private static $singular_name = "Link Tile";
-    protected static $allowed_sizes = [
-        '1x1'
-    ];
     private static $db = [
         'Title' => 'Text', // text in the content field
         'URL' => 'Text'

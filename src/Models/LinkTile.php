@@ -27,6 +27,10 @@ class LinkTile extends Tile {
         'Image' => Image::class,
         'Tree' => SiteTree::class
     ];
+    
+    private static $owns = [
+        'Image'
+    ];
 
     public function getCMSFields() {
         $fields = parent::getCMSFields();

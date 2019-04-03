@@ -73,6 +73,15 @@ class Tile extends DataObject {
 		$fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
 		$fields->addFieldsToTab('Root.Main', HTMLEditorField::create('Content', 'Content'));
 
+        if (class_exists(\OP\ColorField::class)) {
+            $fields->addFieldToTab('Root.Main', \OP\ColorField::create('Color', 'Color Override', $this->Color), 'Content');
+        }else
+        {
+            $fields->addFieldToTab('Root.Main', TextField::create('Color', 'Color Override'), 'Content');
+        }
+        $fields->addFieldsToTab('Root.Main', NumericField::create('Width', 'Width'));
+        $fields->addFieldsToTab('Root.Main', NumericField::create('Height', 'Height'));
+
 		$fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
 
 		return $fields;

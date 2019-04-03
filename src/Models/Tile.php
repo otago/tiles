@@ -80,8 +80,6 @@ class Tile extends DataObject {
         {
             $fields->addFieldToTab('Root.Main', TextField::create('Color', 'Color Override'), 'Content');
         }
-        $fields->addFieldsToTab('Root.Main', NumericField::create('Width', 'Width'));
-        $fields->addFieldsToTab('Root.Main', NumericField::create('Height', 'Height'));
 
 		$fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
 

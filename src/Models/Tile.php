@@ -18,6 +18,7 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use OP\Elements\TileElement;
+use SilverStripe\Forms\NumericField;
 
 /**
  * 

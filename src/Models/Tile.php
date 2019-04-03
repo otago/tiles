@@ -1,12 +1,14 @@
 <?php
 
 namespace OP\Models;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Group;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\ListboxField;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
 use SilverStripe\Core\Injector\Injectable;
@@ -18,6 +20,7 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use OP\Elements\TileElement;
+use OP\ColorField;
 
 /**
  * 
@@ -72,6 +75,15 @@ class Tile extends DataObject {
 		$fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
 		$fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
 		$fields->addFieldsToTab('Root.Main', HTMLEditorField::create('Content', 'Content'));
+
+        if (class_exists(\OP\ColorField::class)) {
+            $fields->addFieldToTab('Root.Main', \OP\ColorField::create('Color', 'Color Override', $this->Color), 'Content');
+        }else
+        {
+            $fields->addFieldToTab('Root.Main', TextField::create('Color', 'Color Override'), 'Content');
+        }
+        $fields->addFieldsToTab('Root.Main', NumericField::create('Width', 'Width'));
+        $fields->addFieldsToTab('Root.Main', NumericField::create('Height', 'Height'));
 
 		$fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
 

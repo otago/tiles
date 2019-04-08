@@ -34,6 +34,7 @@ class LinkTile extends Tile {
 
     public function getCMSFields() {
         $fields = parent::getCMSFields();
+        $fields->addFieldToTab('Root.Main', TextField::create('Title', 'Title'), 'Title');
         $fields->addFieldToTab('Root.Main', TextField::create('URL', 'URL')->setDescription('For external links'));
         $tree = new TreeDropdownField("TreeID", "Local page to link", SiteTree::class, 'ID', 'MenuTitle');
         $tree->setDescription('Select the same item twice to clear. You may have to save before seeing pages in the dropdown.');

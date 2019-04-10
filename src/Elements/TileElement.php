@@ -6,6 +6,7 @@ use SilverStripe\ORM\ArrayList;
 use DNADesign\Elemental\Models\BaseElement;
 use OP\Fields\TileField;
 use OP\Models\Tile;
+use SilverStripe\Security\Security;
 
 class TileElement extends BaseElement {
 
@@ -35,7 +36,7 @@ class TileElement extends BaseElement {
         $fields->addFieldToTab('Root.Main', $tilefield);
         return $fields;
     }
-
+    
     public function getType() {
         return 'Tiles';
     }
@@ -44,6 +45,9 @@ class TileElement extends BaseElement {
         $retarray = [];
         
         foreach ($this->Tiles() as $tile) {
+            if(!$tile->canView(Security::getCurrentUser())) {
+                continue;
+            }
             $sort = ($tile->Row * $this->Rows) + $tile->Col;
             $tile->Sort = $sort;
             $retarray[$sort] = $tile;

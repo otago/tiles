@@ -1,7 +1,9 @@
-import React from 'react';
+// import React from 'react';
+import React from '../../../node_modules/react/index';
 import GridLayout from 'react-grid-layout';
 import 'whatwg-fetch';
 import PropTypes from 'prop-types';
+import DisplayTilePosition from './DisplayTilePosition';
 
 class TileFieldComponent extends React.Component {
   constructor(props) {
@@ -138,6 +140,9 @@ class TileFieldComponent extends React.Component {
             className="tilefield__tilecontainer"
             style={_self.PreviewThumbnail(item)}>
             <div className="tilefield__title">{item.n}</div>
+            <div>
+              <DisplayTilePosition tile={item} />
+            </div>
             <div className="tilefield__actions">
               {disableicon}
               <a
@@ -282,7 +287,6 @@ class TileFieldComponent extends React.Component {
           </a>
         </div>
         <div className="tilefield__clear" />
-
         <GridLayout
           className="layout"
           cols={this.state.rows}

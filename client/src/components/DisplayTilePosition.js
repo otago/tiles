@@ -1,6 +1,6 @@
 const DisplayTilePosition = ({ tile }) => {
   return (
-    <div>
+    <div className="tilefield__position">
       <span>{`${tile.x}, ${tile.y}`}</span>
     </div>
   );

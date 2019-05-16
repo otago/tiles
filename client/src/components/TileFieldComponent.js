@@ -24,7 +24,6 @@ class TileFieldComponent extends React.Component {
 
   // navigate to the adding tile gridfield url
   addTile() {
-    console.log('addTile()');
     if (this.state.currentNewTile) {
       window.location.href =
         this.props.addurl +
@@ -35,7 +34,6 @@ class TileFieldComponent extends React.Component {
 
   // after moving tiles around, you want to warn the user that navigating away will lose their changes
   onSelectChanged(e) {
-    console.log('onSelectChanged(e)');
     // trigger form change in SS
     if (typeof Event === 'function') {
       var event = new Event('change', { bubbles: true });
@@ -48,19 +46,17 @@ class TileFieldComponent extends React.Component {
 
   // dyanmic url to edit a current tile
   getEditURL(myid) {
-    console.log('getEditURL(myid)');
     return this.props.editurl.replace('/ID/', '/' + myid + '/');
   }
 
   // removing the current tile
   getDeleteURL(myid) {
-    console.log('getDeleteURL(myid)');
-    return this.props.deleteurl.replace('/ID', '/' + myid);
+    var delUrl = this.props.deleteurl.replace('/ID', '/' + myid);
+    return delUrl;
   }
 
   // you can either have an image or some text as a preview for a tile
   PreviewThumbnail(item) {
-    console.log('PreviewThumbnail(item)');
     if (item.img) {
       return { 'background-image': 'url(' + item.img + ')' };
     }
@@ -69,7 +65,6 @@ class TileFieldComponent extends React.Component {
 
   // we use ajax to remove tiles. this function checks the response to make sure it's ok
   checkStatus(response) {
-    console.log('checkStatus(response)');
     if (response.status >= 200 && response.status < 300) {
       return response;
     } else {
@@ -81,11 +76,9 @@ class TileFieldComponent extends React.Component {
 
   // requests to remove the tile, and on success it will remove the tile from the grid
   RemoveItem(e) {
-    console.log('RemoveItem(e)');
     let requesturl = e.target.getAttribute('data-url');
     let currentid = e.target.getAttribute('data-id');
     let _self = this;
-
     if (confirm('Are you sure you want to delete this record?')) {
       fetch(requesturl)
         .then(_self.checkStatus)
@@ -111,9 +104,6 @@ class TileFieldComponent extends React.Component {
 
   // goes through and creates the tiles
   generateDOM() {
-    console.group('generateDOM()');
-    console.log('this.state.items => ', this.state.items);
-    console.groupEnd();
     let _self = this;
     return this.state.items.map(function(item) {
       let disableicon = '';
@@ -140,9 +130,7 @@ class TileFieldComponent extends React.Component {
             className="tilefield__tilecontainer"
             style={_self.PreviewThumbnail(item)}>
             <div className="tilefield__title">{item.n}</div>
-            <div>
-              <DisplayTilePosition tile={item} />
-            </div>
+            <DisplayTilePosition tile={item} />
             <div className="tilefield__actions">
               {disableicon}
               <a
@@ -193,7 +181,6 @@ class TileFieldComponent extends React.Component {
 
   // called when resizing/ moving a tile around. updates the data
   onGridChange(callback) {
-    console.log('onGridChange(callback)');
     // preserve the friendly names after rearranging
     for (var i = 0; i < callback.length; i++) {
       for (var n = 0; n < this.state.items.length; n++) {
@@ -212,7 +199,6 @@ class TileFieldComponent extends React.Component {
 
   // disables the add button when a new tilefield is created
   ButtonClasses() {
-    console.log('ButtonClasses()');
     let showdisabled = this.props.disabled;
     if (this.state.currentNewTile && !this.props.disabled) {
       showdisabled = false;
@@ -225,7 +211,6 @@ class TileFieldComponent extends React.Component {
 
   // after changing the number of coloums
   onChangeWidth(e) {
-    console.log('onChangeWidth(e)');
     this.setState({
       rows: e.target.value
     });
@@ -233,7 +218,6 @@ class TileFieldComponent extends React.Component {
 
   // disables the add button when a new tilefield is created
   RowsInput() {
-    console.log('RowsInput()');
     if (this.props.rowsenabled) {
       return (
         <div>
@@ -252,7 +236,6 @@ class TileFieldComponent extends React.Component {
 
   // makes all the tiles :)
   render() {
-    console.log('render()');
     return (
       <div className="tilefield__container">
         {this.RowsInput()}

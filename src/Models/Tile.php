@@ -407,8 +407,7 @@ class Tile extends DataObject {
      * @return string
      */
     public function getPreviewContent() {
-        // return DBField::create_field(DBHTMLText::class, $this->Content)->LimitCharacters(150);
-        return DBField::create_field(DBHTMLText::class, "(".$this->Col."x".$this->Row.")".$this->Content)->LimitCharacters(150);
+        return DBField::create_field(DBHTMLText::class, $this->Content)->LimitCharacters(150);
     }
 
     /**

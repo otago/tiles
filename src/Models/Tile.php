@@ -21,7 +21,7 @@ use OP\Elements\TileElement;
 use SilverStripe\Security\Security;
 
 /**
- * 
+ *
  */
 class Tile extends DataObject {
 
@@ -43,8 +43,8 @@ class Tile extends DataObject {
         'Height' => 'Int',
         //..'Name' => 'Text', // used in one-many relationships
         'Disabled' => 'Boolean',
-        'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
-        'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers, Inherit', 'Inherit')",
+        'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
+        'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers', 'LoggedInUsers')",
     ];
     private static $has_one = [
         'Parent' => TileElement::class
@@ -54,8 +54,8 @@ class Tile extends DataObject {
         'EditorGroups' => Group::class,
     ];
     private static $defaults = [
-        'CanViewType' => 'Inherit',
-        'CanEditType' => 'Inherit'
+        'CanViewType' => 'Anyone',
+        'CanEditType' => 'LoggedInUsers'
     ];
     protected static $maxheight = 2;
     protected static $maxwidth = 2;
@@ -65,7 +65,7 @@ class Tile extends DataObject {
     }
 
     /**
-     * create the field names 
+     * create the field names
      * @return \FieldList
      */
     public function getCMSFields() {
@@ -112,7 +112,7 @@ class Tile extends DataObject {
     /**
      * Returns fields related to configuration aspects on this record, e.g. access control.
      * See {@link getCMSFields()} for content-related fields.
-     * 
+     *
      * @return FieldList
      */
     public function getSettingsFields() {
@@ -124,33 +124,31 @@ class Tile extends DataObject {
         asort($groupsMap);
 
         $fields = FieldList::create(array(
-                    $viewersOptionsField = new OptionsetField(
-                    "CanViewType", _t('Tile.ACCESSHEADER', "Who can view this tile?")
-                    ),
-                    $viewerGroupsField = ListboxField::create("ViewerGroups", _t('SiteTree.VIEWERGROUPS', "Viewer Groups"))
-                    ->setSource($groupsMap)
-                    ->setAttribute(
+            $viewersOptionsField = new OptionsetField(
+                "CanViewType", _t('Tile.ACCESSHEADER', "Who can view this tile?")
+            ),
+            $viewerGroupsField = ListboxField::create("ViewerGroups", _t('SiteTree.VIEWERGROUPS', "Viewer Groups"))
+                ->setSource($groupsMap)
+                ->setAttribute(
                     'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-                    ),
-                    $editorsOptionsField = new OptionsetField(
-                    "CanEditType", _t('Tile.EDITHEADER', "Who can edit this tile?")
-                    ),
-                    $editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
-                    ->setSource($groupsMap)
-                    ->setAttribute(
+                ),
+            $editorsOptionsField = new OptionsetField(
+                "CanEditType", _t('Tile.EDITHEADER', "Who can edit this tile?")
+            ),
+            $editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
+                ->setSource($groupsMap)
+                ->setAttribute(
                     'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-                    )
+                )
         ));
 
         $viewersOptionsSource = array();
-        $viewersOptionsSource["Inherit"] = _t('Tile.INHERIT', "Inherit from parent page");
         $viewersOptionsSource["Anyone"] = _t('Tile.ACCESSANYONE', "Anyone");
         $viewersOptionsSource["LoggedInUsers"] = _t('Tile.ACCESSLOGGEDIN', "Logged-in users");
         $viewersOptionsSource["OnlyTheseUsers"] = _t('Tile.ACCESSONLYTHESE', "Only these people (choose from list)");
         $viewersOptionsField->setSource($viewersOptionsSource);
 
         $editorsOptionsSource = array();
-        $editorsOptionsSource["Inherit"] = _t('Tile.INHERIT', "Inherit from parent page");
         $editorsOptionsSource["LoggedInUsers"] = _t('Tile.EDITANYONE', "Anyone who can log-in to the CMS");
         $editorsOptionsSource["OnlyTheseUsers"] = _t('Tile.EDITONLYTHESE', "Only these people (choose from list)");
         $editorsOptionsField->setSource($editorsOptionsSource);
@@ -221,7 +219,7 @@ class Tile extends DataObject {
      * This function should return true if the current user can view this
      * page. It can be overloaded to customise the security model for an
      * application.
-     * 
+     *
      * Denies permission if any of the following conditions is TRUE:
      * - canView() on any extension returns FALSE
      * - "CanViewType" directive is set to "Inherit" and any parent page return false for canView()
@@ -234,15 +232,18 @@ class Tile extends DataObject {
      * @param Member|int|null $member
      * @return boolean True if the current user can view this page.
      */
-    public function canView($member = null) {
+    public function canView($member = null)
+    {
+
+
         if (!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
-            $member = Security::getCurrentUser() && Security::getCurrentUser()->ID;
+            $member = Security::getCurrentUser();//&& Security::getCurrentUser()->ID;
         }
 
         // admin override
-        if ($member && Permission::checkMember($member, array("ADMIN", "SITETREE_VIEW_ALL")))
+        if ($member && Permission::checkMember($member, array("ADMIN", "SITETREE_VIEW_ALL"))) {
             return true;
-
+        }
         // Standard mechanism for accepting permission changes from extensions
         $extended = $this->extendedCan('canView', $member);
         if ($extended !== null)
@@ -251,14 +252,6 @@ class Tile extends DataObject {
         // check for empty spec
         if (!$this->CanViewType || $this->CanViewType == 'Anyone')
             return true;
-
-        // check for inherit
-        if ($this->CanViewType == 'Inherit') {
-            if (!$this->ParentID) {
-                return true;
-            }
-            return DataObject::get_by_id(TileElement::class, $this->ParentID)->canView($member);
-        }
 
         // check for any logged-in users
         if ($this->CanViewType == 'LoggedInUsers' && $member) {
@@ -269,10 +262,11 @@ class Tile extends DataObject {
         if ($member && is_numeric($member))
             $member = DataObject::get_by_id(Member::class, $member);
         if (
-                $this->CanViewType == 'OnlyTheseUsers' && $member && $member->inGroups($this->ViewerGroups())
-        )
+            $this->CanViewType == 'OnlyTheseUsers' && $member && $member->inGroups($this->ViewerGroups())
+        ) {
+           // echo $this->ID."<br>";
             return true;
-
+        }
         return false;
     }
 
@@ -280,14 +274,14 @@ class Tile extends DataObject {
      * This function should return true if the current user can edit this
      * page. It can be overloaded to customise the security model for an
      * application.
-     * 
+     *
      * Denies permission if any of the following conditions is TRUE:
      * - canEdit() on any extension returns FALSE
      * - canView() return false
      * - "CanEditType" directive is set to "Inherit" and any parent page return false for canEdit()
      * - "CanEditType" directive is set to "LoggedInUsers" and no user is logged in or doesn't have the CMS_Access_CMSMAIN permission code
      * - "CanEditType" directive is set to "OnlyTheseUsers" and user is not in the given groups
-     * 
+     *
      * @uses canView()
      * @uses EditorGroups()
      * @uses DataExtension->canEdit()
@@ -395,7 +389,7 @@ class Tile extends DataObject {
     }
 
     /**
-     * if you specify a background color 
+     * if you specify a background color
      * @return string
      */
     public function getTileColor() {
@@ -407,7 +401,7 @@ class Tile extends DataObject {
      * @return string
      */
     public function getPreviewContent() {
-        return DBField::create_field(DBHTMLText::class, $this->Content)->LimitCharacters(150);
+        return DBField::create_field(DBHTMLText::class, "(".$this->Col."x".$this->Row.")".$bob.$this->Content)->LimitCharacters(150);
     }
 
     /**

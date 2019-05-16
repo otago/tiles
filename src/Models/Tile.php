@@ -419,18 +419,15 @@ class Tile extends DataObject {
         return null;
     }
 
-    /**
-     * Maybe here we just have to get all the tiles for this elemental and run the SortTiles on it.
-     * Then I guess we just take the last one and add the tile position beside that.
-     * Probably have to get how many columns the grid has and make sure we arent doing something retarded like
-     * col=5 when the grid is only supporting 4
-     */
-    public function onBeforeWrite()
-    {
-        error_log(var_export("Cool looks like it is in here to set initial x: y: ", true));
-        error_log(var_export("onBeforeWrite Tile", true));
-        error_log(var_export($this, true));
+    public function onBeforeWrite() {
+        if (!$this->ID) {
+            $this->setTileRowTo9000();
+        }
         parent::onBeforeWrite();
+    }
+
+    public function setTileRowTo9000() {
+        $this->Row = 9000;
     }
 
 }

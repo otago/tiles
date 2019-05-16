@@ -237,7 +237,7 @@ class TileFieldComponent extends React.Component {
     if (this.props.rowsenabled) {
       return (
         <div>
-          <label className="form__field-label">Number of rows</label>
+          <label className="form__field-label">Number of columns</label>
           <input
             type="number"
             name={`${this.props.name}[Rows]`}

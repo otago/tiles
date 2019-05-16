@@ -25,12 +25,17 @@
 	margin-bottom: 12px;
 	color: #333;
 }
+.tilefield__position {
+    position: absolute;
+    bottom: 0;
+}
 .tilefield__previewcontent {
 	color: #333;
 }
 .tilefield__tilecontainer{
     position: relative;
-    height: 100vh;
+    /* height: 100vh; */
+    height: 100%;
     padding: 10px;
 	background-position-y: 51px;
     background-repeat: no-repeat;

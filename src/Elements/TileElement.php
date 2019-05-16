@@ -48,7 +48,7 @@ class TileElement extends BaseElement {
             if(!$tile->canView(Security::getCurrentUser())) {
                 continue;
             }
-            $sort = ($tile->Row * $this->Rows) + $tile->Col;
+            $sort = ($tile->Row * 1000) + $tile->Col;
             $tile->Sort = $sort;
             $retarray[$sort] = $tile;
         }

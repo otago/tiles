@@ -412,4 +412,15 @@ class Tile extends DataObject {
         return null;
     }
 
+    public function onBeforeWrite() {
+        if (!$this->ID) {
+            $this->setTileRowTo9000();
+        }
+        parent::onBeforeWrite();
+    }
+
+    public function setTileRowTo9000() {
+        $this->Row = 9000;
+    }
+
 }

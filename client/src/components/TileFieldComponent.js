@@ -1,5 +1,4 @@
-// import React from 'react';
-import React from '../../../node_modules/react/index';
+import React from 'react';
 import GridLayout from 'react-grid-layout';
 import 'whatwg-fetch';
 import PropTypes from 'prop-types';

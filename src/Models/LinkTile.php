@@ -58,6 +58,11 @@ class LinkTile extends Tile {
     }
 
     public function getPreviewContent() {
+        if($this->URL != "")
+        {
+            return DBField::create_field(DBHTMLText::class, $this->Title." ".$this->URL)->LimitCharacters(150);
+        }
+
         if (!$this->Tree()) {
             return '';
         }

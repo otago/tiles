@@ -40,13 +40,17 @@ class LinkTile extends Tile {
         $tree->setDescription('Select the same item twice to clear. You may have to save before seeing pages in the dropdown.');
         $fields->addFieldToTab('Root.Main', $tree);
 
-        $imageupload = new UploadField('Image', 'Upload Image');
-        $fields->addFieldToTab('Root.Main', $imageupload);
-        $imageupload->setAllowedFileCategories('image');
-        $imageupload->setFolderName('tiles/photo');
-        $imageupload->setAllowedMaxFileNumber(1);
-        $imageupload->setDescription('Image that will be displayed on the tile.');
-        $imageupload->setFolderName('widgets');
+        if($this->ID) {
+            $imageupload = new UploadField('Image', 'Upload Image');
+            $fields->addFieldToTab('Root.Main', $imageupload);
+            $imageupload->setAllowedFileCategories('image');
+            $imageupload->setFolderName('tiles/photo');
+            $imageupload->setAllowedMaxFileNumber(1);
+            $imageupload->setDescription('Image that will be displayed on the tile.');
+            $imageupload->setFolderName('widgets');
+        } else {
+            $fields->push(LiteralField::create('SaveFirst', '')->setDescription('Save to add first image'));
+        }
 
         return $fields;
     }

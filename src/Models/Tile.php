@@ -2,34 +2,34 @@
 
 namespace OP\Models;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Group;
+use OP\Elements\TileElement;
+use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\ListboxField;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
-use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Versioned\Versioned;
+use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
-use OP\Elements\TileElement;
+use SilverStripe\Security\Group;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
+use SilverStripe\Versioned\Versioned;
 
 /**
  *
  */
-class Tile extends DataObject {
-
+class Tile extends DataObject
+{
     use Injectable;
 
     // enable cascade publishing
     private static $extensions = [
-        Versioned::class
+        Versioned::class,
     ];
     private static $table_name = 'Tile';
     private static $singular_name = "Generic Tile";
@@ -47,7 +47,7 @@ class Tile extends DataObject {
         'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers', 'LoggedInUsers')",
     ];
     private static $has_one = [
-        'Parent' => TileElement::class
+        'Parent' => TileElement::class,
     ];
     private static $many_many = [
         'ViewerGroups' => Group::class,
@@ -55,12 +55,13 @@ class Tile extends DataObject {
     ];
     private static $defaults = [
         'CanViewType' => 'Anyone',
-        'CanEditType' => 'LoggedInUsers'
+        'CanEditType' => 'LoggedInUsers',
     ];
     protected static $maxheight = 2;
     protected static $maxwidth = 2;
 
-    public function __construct($record = null, $isSingleton = false, $model = null) {
+    public function __construct($record = null, $isSingleton = false, $model = null)
+    {
         parent::__construct($record, $isSingleton, $model);
     }
 
@@ -68,7 +69,8 @@ class Tile extends DataObject {
      * create the field names
      * @return \FieldList
      */
-    public function getCMSFields() {
+    public function getCMSFields()
+    {
         $fields = FieldList::create();
         $fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
         $fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
@@ -89,7 +91,8 @@ class Tile extends DataObject {
      * how big this tile can grow side ways
      * @return int
      */
-    public function getMaxWidth() {
+    public function getMaxWidth()
+    {
         return $this::$maxwidth;
     }
 
@@ -97,7 +100,8 @@ class Tile extends DataObject {
      * how tall this tile can get
      * @return int
      */
-    public function getMaxHeight() {
+    public function getMaxHeight()
+    {
         return $this::$maxheight;
     }
 
@@ -105,7 +109,8 @@ class Tile extends DataObject {
      * X-Y format of this tile
      * @return string
      */
-    public function getSize() {
+    public function getSize()
+    {
         return $this->Width . '-' . $this->Height;
     }
 
@@ -115,7 +120,8 @@ class Tile extends DataObject {
      *
      * @return FieldList
      */
-    public function getSettingsFields() {
+    public function getSettingsFields()
+    {
         $groupsMap = array();
         foreach (Group::get() as $group) {
             // Listboxfield values are escaped, use ASCII char instead of &raquo;
@@ -139,7 +145,7 @@ class Tile extends DataObject {
                 ->setSource($groupsMap)
                 ->setAttribute(
                     'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-                )
+                ),
         ));
 
         $viewersOptionsSource = array();
@@ -176,7 +182,8 @@ class Tile extends DataObject {
      * render the tile
      * @return type
      */
-    public function forTemplate() {
+    public function forTemplate()
+    {
         $shortname = (new \ReflectionClass($this))->getShortName();
         return $this->renderWith(array('Tiles/' . $shortname, $shortname));
     }
@@ -185,7 +192,8 @@ class Tile extends DataObject {
      * Returns CSS friendly name
      * @return string
      */
-    public function CSSName() {
+    public function CSSName()
+    {
         $shortname = (new \ReflectionClass($this))->getShortName();
         return strtolower($shortname);
     }
@@ -194,7 +202,8 @@ class Tile extends DataObject {
      * Validates the tile data object
      * @return A {@link ValidationResult} object
      */
-    public function validate() {
+    public function validate()
+    {
         $result = parent::validate();
 
         if ($this->Height > $this::$maxheight) {
@@ -208,7 +217,8 @@ class Tile extends DataObject {
         return $result;
     }
 
-    public function canCreate($member = null, $context = array()) {
+    public function canCreate($member = null, $context = array())
+    {
         if (!$this->Parent()) {
             return true;
         }
@@ -235,9 +245,8 @@ class Tile extends DataObject {
     public function canView($member = null)
     {
 
-
         if (!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
-            $member = Security::getCurrentUser();//&& Security::getCurrentUser()->ID;
+            $member = Security::getCurrentUser(); //&& Security::getCurrentUser()->ID;
         }
 
         // admin override
@@ -246,12 +255,14 @@ class Tile extends DataObject {
         }
         // Standard mechanism for accepting permission changes from extensions
         $extended = $this->extendedCan('canView', $member);
-        if ($extended !== null)
+        if ($extended !== null) {
             return $extended;
+        }
 
         // check for empty spec
-        if (!$this->CanViewType || $this->CanViewType == 'Anyone')
+        if (!$this->CanViewType || $this->CanViewType == 'Anyone') {
             return true;
+        }
 
         // check for any logged-in users
         if ($this->CanViewType == 'LoggedInUsers' && $member) {
@@ -259,12 +270,14 @@ class Tile extends DataObject {
         }
 
         // check for specific groups
-        if ($member && is_numeric($member))
+        if ($member && is_numeric($member)) {
             $member = DataObject::get_by_id(Member::class, $member);
+        }
+
         if (
             $this->CanViewType == 'OnlyTheseUsers' && $member && $member->inGroups($this->ViewerGroups())
         ) {
-           // echo $this->ID."<br>";
+            // echo $this->ID."<br>";
             return true;
         }
         return false;
@@ -289,7 +302,8 @@ class Tile extends DataObject {
      * @param Member $member Set to FALSE if you want to explicitly test permissions without a valid user (useful for unit tests)
      * @return boolean True if the current user can edit this page.
      */
-    public function canEdit($member = null) {
+    public function canEdit($member = null)
+    {
         if ($member instanceof Member) {
             $memberID = $member->ID;
         } else if (is_numeric($member)) {
@@ -335,7 +349,8 @@ class Tile extends DataObject {
      * get the width of this item (min of 1)
      * @return int
      */
-    public function getWidth() {
+    public function getWidth()
+    {
         return max($this->getField('Width'), 1);
     }
 
@@ -343,7 +358,8 @@ class Tile extends DataObject {
      * get the height of this item (min of 1)
      * @return int
      */
-    public function getHeight() {
+    public function getHeight()
+    {
         return max($this->getField('Height'), 1);
     }
 
@@ -351,7 +367,8 @@ class Tile extends DataObject {
      * takes in position x and y, and saves it
      * @param array $data
      */
-    public function writeRawArray($data) {
+    public function writeRawArray($data)
+    {
         if (isset($data['x'])) {
             $this->Col = (int) $data['x'];
         }
@@ -371,7 +388,8 @@ class Tile extends DataObject {
      * takes in position x and y, and saves it
      * @param array $data
      */
-    public function generateRawArray() {
+    public function generateRawArray()
+    {
         return array(
             'i' => $this->ID,
             'n' => $this->singular_name(),
@@ -384,7 +402,9 @@ class Tile extends DataObject {
             'c' => $this->getTileColor(),
             'p' => $this->getPreviewContent(),
             'img' => $this->getPreviewImage(),
-            'disabled' => $this->Disabled
+            'disabled' => $this->Disabled,
+            'canView' => $this->canView(),
+            'canEdit' => $this->canEdit(),
         );
     }
 
@@ -392,7 +412,8 @@ class Tile extends DataObject {
      * if you specify a background color
      * @return string
      */
-    public function getTileColor() {
+    public function getTileColor()
+    {
         return $this->Color ?: 'transparent';
     }
 
@@ -400,7 +421,8 @@ class Tile extends DataObject {
      * text to be inside the tile itself
      * @return string
      */
-    public function getPreviewContent() {
+    public function getPreviewContent()
+    {
         return DBField::create_field(DBHTMLText::class, $this->Content)->LimitCharacters(150);
     }
 
@@ -408,19 +430,21 @@ class Tile extends DataObject {
      * a preview image
      * @return Image|null
      */
-    public function getPreviewImage() {
+    public function getPreviewImage()
+    {
         return null;
     }
 
-    public function onBeforeWrite() {
+    public function onBeforeWrite()
+    {
         if (!$this->ID) {
             $this->setTileRowTo9000();
         }
         parent::onBeforeWrite();
     }
 
-    public function setTileRowTo9000() {
+    public function setTileRowTo9000()
+    {
         $this->Row = 9000;
     }
-
 }

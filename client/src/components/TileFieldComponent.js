@@ -4,6 +4,33 @@ import 'whatwg-fetch';
 import PropTypes from 'prop-types';
 import DisplayTilePosition from './DisplayTilePosition';
 
+const DisabledTile = () => {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%'
+      }}>
+      <a
+        className="font-icon-eye-with-line tilefield__eye"
+        style={{ fontSize: 'xx-large' }}
+        title="Hidden tile"
+      />
+      <p>No view Permissions</p>
+    </div>
+  );
+};
+
+const DisableIcon = ({ disabled }) => {
+  if (!disabled) return null;
+  return (
+    <a className="font-icon-eye-with-line tilefield__eye" title="Hidden tile" />
+  );
+};
+
 class TileFieldComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -105,15 +132,6 @@ class TileFieldComponent extends React.Component {
   generateDOM() {
     let _self = this;
     return this.state.items.map(function(item) {
-      let disableicon = '';
-      if (item.disabled == 1) {
-        disableicon = (
-          <a
-            className="font-icon-eye-with-line tilefield__eye"
-            title="Hidden tile"
-          />
-        );
-      }
       return (
         <div
           key={item.i}
@@ -125,30 +143,36 @@ class TileFieldComponent extends React.Component {
             maxW: item.maxW,
             maxH: item.maxH
           }}>
-          <div
-            className="tilefield__tilecontainer"
-            style={_self.PreviewThumbnail(item)}>
-            <div className="tilefield__title">{item.n}</div>
-            <DisplayTilePosition tile={item} />
-            <div className="tilefield__actions">
-              {disableicon}
-              <a
-                href={_self.getEditURL(item.i)}
-                className="btn action font-icon-edit"
-                title="Edit this tile">
-                Edit
-              </a>
-              <a
-                data-url={_self.getDeleteURL(item.i)}
-                data-id={item.i}
-                className="btn action font-icon-trash"
-                title="Delete this tile"
-                onClick={_self.RemoveItem}
-              />
+          {!item.canView && <DisabledTile />}
+          {item.canView && (
+            <div
+              className="tilefield__tilecontainer"
+              style={_self.PreviewThumbnail(item)}>
+              <div className="tilefield__title">{item.n}</div>
+              <DisplayTilePosition tile={item} />
+              <div className="tilefield__actions">
+                <DisableIcon disabled={item.disabled} />
+                <a
+                  href={item.canEdit ? _self.getEditURL(item.i) : null}
+                  className={`btn action font-icon-edit ${!item.canEdit &&
+                    'disabled'}`}
+                  title="Edit this tile">
+                  Edit
+                </a>
+                <a
+                  data-url={item.canEdit ? _self.getDeleteURL(item.i) : null}
+                  data-id={item.i}
+                  className={`btn action font-icon-trash ${!item.canEdit &&
+                    'disabled'}`}
+                  title="Delete this tile"
+                  onClick={_self.RemoveItem}
+                />
+              </div>
+              <div className="tilefield__clear" />
+              <div className="tilefield__previewcontent">{item.p}</div>
             </div>
-            <div className="tilefield__clear" />
-            <div className="tilefield__previewcontent">{item.p}</div>
-          </div>
+          )}
+
           <input
             type="hidden"
             name={`Tiles[GridLayout][${item.i}][x]`}
@@ -189,6 +213,8 @@ class TileFieldComponent extends React.Component {
           callback[i].c = this.state.items[n].c;
           callback[i].img = this.state.items[n].img;
           callback[i].disabled = this.state.items[n].disabled;
+          callback[i].canView = this.state.items[n].canView;
+          callback[i].canEdit = this.state.items[n].canEdit;
         }
       }
     }
@@ -275,6 +301,8 @@ class TileFieldComponent extends React.Component {
           rowHeight={200}
           width={1000}
           autoSize={true}
+          isDraggable={this.onGridChange}
+          isResizable={false}
           onDragStop={this.onGridChange}
           onResizeStop={this.onGridChange}>
           {this.generateDOM()}

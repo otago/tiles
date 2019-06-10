@@ -21,6 +21,11 @@ Injector.ready(() => {
       let name = this[0].getAttribute('data-name');
       let rows = this[0].getAttribute('data-rows');
       let rowsenabled = this[0].getAttribute('data-rows-enabled');
+      let canEdit = this[0].getAttribute('data-can-edit');
+      let canView = this[0].getAttribute('data-can-view');
+
+      console.log('canEdit => ', canEdit);
+      console.log('canView => ', canView);
 
       render(
         <TileFieldComponent

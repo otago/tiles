@@ -4,25 +4,23 @@ import 'whatwg-fetch';
 import PropTypes from 'prop-types';
 import DisplayTilePosition from './DisplayTilePosition';
 
-const DisabledTile = () => {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%'
-      }}>
-      <a
-        className="font-icon-eye-with-line tilefield__eye"
-        style={{ fontSize: 'xx-large' }}
-        title="Hidden tile"
-      />
-      <p>No view Permissions</p>
-    </div>
-  );
-};
+const DisabledTile = () => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%'
+    }}>
+    <a
+      className="font-icon-eye-with-line tilefield__eye"
+      style={{ fontSize: 'xx-large' }}
+      title="Hidden tile"
+    />
+    <p>No view Permissions</p>
+  </div>
+);
 
 const DisableIcon = ({ disabled }) => {
   if (!disabled) return null;
@@ -264,36 +262,37 @@ class TileFieldComponent extends React.Component {
     return (
       <div className="tilefield__container">
         {this.RowsInput()}
-        <div className="pull-xs-left ss-gridfield-add-new-multi-class">
-          <div className="form-group field">
-            <div className="form__field-holder">
-              <select
-                className="tilefield__selectholder no-change-track"
-                onChange={this.onSelectChanged}>
-                <option value="" selected>
-                  Select new tile type
-                </option>
-                {this.props.tiletypes.map(item => {
-                  return (
-                    <option
-                      value={item.title}
-                      className="no-change-track"
-                      key={item.title}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-              </select>
+        {!this.props.readOnly && (
+          <div className="pull-xs-left ss-gridfield-add-new-multi-class">
+            <div className="form-group field">
+              <div className="form__field-holder">
+                <select
+                  className="tilefield__selectholder no-change-track"
+                  onChange={this.onSelectChanged}>
+                  <option value="" selected>
+                    Select new tile type
+                  </option>
+                  {this.props.tiletypes.map(item => {
+                    return (
+                      <option
+                        value={item.title}
+                        className="no-change-track"
+                        key={item.title}>
+                        {item.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             </div>
+            <a
+              className={this.ButtonClasses()}
+              data-icon="add"
+              onClick={this.addTile}>
+              Add
+            </a>
           </div>
-
-          <a
-            className={this.ButtonClasses()}
-            data-icon="add"
-            onClick={this.addTile}>
-            Add
-          </a>
-        </div>
+        )}
         <div className="tilefield__clear" />
         <GridLayout
           className="layout"
@@ -301,8 +300,8 @@ class TileFieldComponent extends React.Component {
           rowHeight={200}
           width={1000}
           autoSize={true}
-          isDraggable={this.onGridChange}
-          isResizable={false}
+          isDraggable={!this.props.readOnly}
+          isResizable={!this.props.readOnly}
           onDragStop={this.onGridChange}
           onResizeStop={this.onGridChange}>
           {this.generateDOM()}
@@ -319,6 +318,7 @@ TileFieldComponent.propTypes = {
   addurl: PropTypes.string,
   editurl: PropTypes.string,
   disabled: PropTypes.bool,
+  readOnly: PropTypes.bool,
   name: PropTypes.string,
   rows: PropTypes.number,
   rowsenabled: PropTypes.bool

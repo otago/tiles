@@ -10,6 +10,6 @@
 	 data-rows-enabled="$RowsEnabled"
      data-can-edit="$canEdit()"
      data-can-view="true"
+     data-attributes="$AttributesJson()"
      >
-
 </div>

@@ -224,7 +224,7 @@ class Tile extends DataObject
     {
 
         if (!$member || !(is_a($member, 'Member')) || is_numeric($member)) {
-            $member = Security::getCurrentUser(); //&& Security::getCurrentUser()->ID;
+            $member = Security::getCurrentUser();
         }
 
         // admin override

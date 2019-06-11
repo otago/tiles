@@ -44,18 +44,16 @@ class Tile extends DataObject
         //..'Name' => 'Text', // used in one-many relationships
         'Disabled' => 'Boolean',
         'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
-        'CanEditType' => "Enum('Inherit, LoggedInUsers, OnlyTheseUsers', 'Inherit')",
     ];
     private static $has_one = [
         'Parent' => TileElement::class,
     ];
     private static $many_many = [
         'ViewerGroups' => Group::class,
-        'EditorGroups' => Group::class,
     ];
     private static $defaults = [
         'CanViewType' => 'Anyone',
-        'CanEditType' => 'LoggedInUsers',
+
     ];
     protected static $maxheight = 2;
     protected static $maxwidth = 2;
@@ -138,14 +136,6 @@ class Tile extends DataObject
                 ->setAttribute(
                     'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
                 ),
-            $editorsOptionsField = new OptionsetField(
-                "CanEditType", _t('Tile.EDITHEADER', "Who can edit this tile?")
-            ),
-            $editorGroupsField = ListboxField::create("EditorGroups", _t('SiteTree.EDITORGROUPS', "Editor Groups"))
-                ->setSource($groupsMap)
-                ->setAttribute(
-                    'data-placeholder', _t('Tile.GroupPlaceholder', 'Click to select group')
-                ),
         ));
 
         $viewersOptionsSource = array();
@@ -154,24 +144,12 @@ class Tile extends DataObject
         $viewersOptionsSource["OnlyTheseUsers"] = _t('Tile.ACCESSONLYTHESE', "Only these people (choose from list)");
         $viewersOptionsField->setSource($viewersOptionsSource);
 
-        $editorsOptionsSource = array();
-        $editorsOptionsSource["LoggedInUsers"] = _t('Tile.EDITANYONE', "Anyone who can log-in to the CMS");
-        $editorsOptionsSource["OnlyTheseUsers"] = _t('Tile.EDITONLYTHESE', "Only these people (choose from list)");
-        $editorsOptionsField->setSource($editorsOptionsSource);
-
         if (!Permission::check('SITETREE_GRANT_ACCESS')) {
             $fields->makeFieldReadonly($viewersOptionsField);
             if ($this->CanViewType == 'OnlyTheseUsers') {
                 $fields->makeFieldReadonly($viewerGroupsField);
             } else {
                 $fields->removeByName('ViewerGroups');
-            }
-
-            $fields->makeFieldReadonly($editorsOptionsField);
-            if ($this->CanEditType == 'OnlyTheseUsers') {
-                $fields->makeFieldReadonly($editorGroupsField);
-            } else {
-                $fields->removeByName('EditorGroups');
             }
         }
 
@@ -284,26 +262,6 @@ class Tile extends DataObject
     }
 
     /**
-     * This function should return true if the current user can edit this
-     * page. It can be overloaded to customise the security model for an
-     * application.
-     *
-     * Denies permission if any of the following conditions is TRUE:
-     * - canEdit() on any extension returns FALSE
-     * - canView() return false
-     * - "CanEditType" directive is set to "Inherit" and any parent page return false for canEdit()
-     * - "CanEditType" directive is set to "LoggedInUsers" and no user is logged in or doesn't have the CMS_Access_CMSMAIN permission code
-     * - "CanEditType" directive is set to "OnlyTheseUsers" and user is not in the given groups
-     *
-     * @uses canView()
-     * @uses EditorGroups()
-     * @uses DataExtension->canEdit()
-     *
-     * @param Member $member Set to FALSE if you want to explicitly test permissions without a valid user (useful for unit tests)
-     * @return boolean True if the current user can edit this page.
-     */
-
-    /**
      * The idea here is that we check for conditions that are not met. if not met we return false
      * This allows us to keep on appending checks
      */
@@ -317,9 +275,6 @@ class Tile extends DataObject
         if (!$memberID) {
             return false;
         }
-        if (!$this->ParentID) {
-            return true;
-        }
 
         // Standard mechanism for accepting permission changes from extensions
         $extended = $this->extendedCan('canEdit', $memberID);
@@ -328,25 +283,9 @@ class Tile extends DataObject
         }
 
         // fail if type === Inherit & member cannot edit parent
-        if ($this->CanEditType == 'Inherit') {
-            // first check if it has a parent (it always should?)
-            if ($this->ParentID) {
-                $parentCanEdit = DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
-                if ($parentCanEdit === false) {
-                    return false;
-                }
-            }
+        if ($this->ParentID) {
+            return DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
         }
-
-        // fail if type === LoggedInUsers & memberID === false
-        if ($this->CanEditType == 'LoggedInUsers' && !$memberID) {
-            return false;
-        }
-        // fail if type === OnlyTheseUsers & member not in viewer group
-        if ($this->CanEditType == 'OnlyTheseUsers' && !$member->inGroups($this->ViewerGroups())) {
-            return false;
-        }
-
         // sweet you passed all the checks, proceed
         return true;
     }

@@ -7,7 +7,6 @@ import React from 'react';
  * This file creates the react tile component upon an entwine match.
  * The data is provided via data-* attributes
  */
-
 Injector.ready(() => {
   // in the future when we ditch entwine, we should be able to ditch jquery too
   $('.tilefield__react-container').entwine({
@@ -17,10 +16,13 @@ Injector.ready(() => {
       let list = JSON.parse(this[0].getAttribute('data-list'));
       let editurl = this[0].getAttribute('data-editurl');
       let deleteurl = this[0].getAttribute('data-deleteurl');
-      let disabled = this[0].getAttribute('data-disabled');
       let name = this[0].getAttribute('data-name');
       let rows = this[0].getAttribute('data-rows');
       let rowsenabled = this[0].getAttribute('data-rows-enabled');
+
+      let gridAttributes = this[0].getAttribute('data-attributes');
+      gridAttributes = JSON.parse(gridAttributes);
+      const { readonly, disabled } = gridAttributes;
 
       render(
         <TileFieldComponent
@@ -30,6 +32,7 @@ Injector.ready(() => {
           deleteurl={deleteurl}
           list={list}
           disabled={disabled}
+          readOnly={readonly}
           name={name}
           rows={rows}
           rowsenabled={rowsenabled}

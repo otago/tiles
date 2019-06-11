@@ -44,7 +44,7 @@ class Tile extends DataObject
         //..'Name' => 'Text', // used in one-many relationships
         'Disabled' => 'Boolean',
         'CanViewType' => "Enum('Anyone, LoggedInUsers, OnlyTheseUsers', 'Anyone')",
-        'CanEditType' => "Enum('LoggedInUsers, OnlyTheseUsers', 'LoggedInUsers')",
+        'CanEditType' => "Enum('Inherit, LoggedInUsers, OnlyTheseUsers', 'Inherit')",
     ];
     private static $has_one = [
         'Parent' => TileElement::class,
@@ -302,16 +302,22 @@ class Tile extends DataObject
      * @param Member $member Set to FALSE if you want to explicitly test permissions without a valid user (useful for unit tests)
      * @return boolean True if the current user can edit this page.
      */
+
+    /**
+     * The idea here is that we check for conditions that are not met. if not met we return false
+     * This allows us to keep on appending checks
+     */
     public function canEdit($member = null)
     {
-        if ($member instanceof Member) {
-            $memberID = $member->ID;
-        } else if (is_numeric($member)) {
-            $memberID = $member;
-        } else {
-            $memberID = Security::getCurrentUser()->ID;
+        if (!$member) {
+            $member = Security::getCurrentUser();
         }
-        if ($memberID && Permission::checkMember($memberID, array("ADMIN", "SITETREE_EDIT_ALL"))) {
+        $memberID = ($member instanceof Member) ? $member->ID : $member;
+
+        if (!$memberID) {
+            return false;
+        }
+        if (!$this->ParentID) {
             return true;
         }
 
@@ -321,28 +327,28 @@ class Tile extends DataObject
             return $extended;
         }
 
-        // check for inherit
+        // fail if type === Inherit & member cannot edit parent
         if ($this->CanEditType == 'Inherit') {
-            if (!$this->ParentID) {
-                return true;
+            // first check if it has a parent (it always should?)
+            if ($this->ParentID) {
+                $parentCanEdit = DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
+                if ($parentCanEdit === false) {
+                    return false;
+                }
             }
-            return DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
         }
 
-        // check for any logged-in users
-        if ($this->CanEditType == 'LoggedInUsers' && $member) {
-            return true;
+        // fail if type === LoggedInUsers & memberID === false
+        if ($this->CanEditType == 'LoggedInUsers' && !$memberID) {
+            return false;
+        }
+        // fail if type === OnlyTheseUsers & member not in viewer group
+        if ($this->CanEditType == 'OnlyTheseUsers' && !$member->inGroups($this->ViewerGroups())) {
+            return false;
         }
 
-        // check for specific groups
-        if ($member && is_numeric($member)) {
-            $member = DataObject::get_by_id(Member::class, $member);
-        }
-        if ($this->CanEditType == 'OnlyTheseUsers' && $member && $member->inGroups($this->ViewerGroups())) {
-            return true;
-        }
-
-        return false;
+        // sweet you passed all the checks, proceed
+        return true;
     }
 
     /**

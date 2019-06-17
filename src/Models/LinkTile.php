@@ -11,6 +11,7 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\Forms\LiteralField;
 
 /**
  * A tile the holds an image, and an external or internal link to resource

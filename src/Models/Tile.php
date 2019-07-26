@@ -82,6 +82,8 @@ class Tile extends DataObject
 
         $fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 
@@ -152,6 +154,7 @@ class Tile extends DataObject
                 $fields->removeByName('ViewerGroups');
             }
         }
+        $this->extend('updateSettingsFields', $fields);
 
         return $fields;
     }

@@ -31,6 +31,8 @@ class Slide extends DataObject {
         'Image'
     ];
 
+    private static $default_sort = "Sort";
+
     public function getCMSFields() {
         $fields = parent::getCMSFields();
 

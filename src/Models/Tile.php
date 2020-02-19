@@ -385,6 +385,17 @@ class Tile extends DataObject
 
     public function onBeforeWrite()
     {
+        // because tiles are not versioned, publish every owning object
+        foreach ($this->config()->owns as $owningobject) {
+            if (!$this->$owningobject) {
+                continue;
+            }
+            if ($this->$owningobject->hasMethod('publishRecursive')) {
+                if ($this->$owningobject->canPublish(Security::getCurrentUser())) {
+                    $this->$owningobject->publishRecursive();
+                }
+            }
+        }
         if (!$this->ID) {
             $this->setTileRowTo9000();
         }

@@ -391,7 +391,7 @@ class Tile extends DataObject
                 continue;
             }
             if ($this->$owningobject->hasMethod('publishRecursive')) {
-                if ($this->$owningobject->canPublish(Security::getCurrentUser())) {
+                if ($this->$owningobject->canPublish(Security::getCurrentUser()) && $this->$owningobject->isInDB()) {
                     $this->$owningobject->publishRecursive();
                 }
             }

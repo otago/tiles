@@ -286,7 +286,7 @@ class Tile extends DataObject
         }
 
         // fail if type === Inherit & member cannot edit parent
-        if ($this->ParentID) {
+        if ($this->ParentID  && $this->Parent()->exists()) {
             return DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
         }
         // sweet you passed all the checks, proceed

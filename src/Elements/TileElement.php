@@ -22,6 +22,9 @@ class TileElement extends BaseElement {
     private static $owns = [
         'Tiles'
     ];
+    private static $cascade_deletes = [
+        'Tiles',
+    ];
     private static $table_name = 'TileElement';
 
     public function getCMSFields() {

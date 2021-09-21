@@ -167,7 +167,7 @@ class TileFieldComponent extends React.Component {
                 />
               </div>
               <div className="tilefield__clear" />
-              <div className="tilefield__previewcontent">{item.d ? <div className="tileRed">[DRAFT]</div>}{item.p}</div>
+              <div className="tilefield__previewcontent">item.d ? <div className="tileRed">[DRAFT]</div>{item.p}</div>
             </div>
           )}
 

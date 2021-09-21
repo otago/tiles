@@ -130,9 +130,7 @@ class TileFieldComponent extends React.Component {
   generateDOM() {
     let _self = this;
     return this.state.items.map(function(item) {
-      if (item.d) {
-        var bob = "<div className=\"tileRed\">[DRAFT]</div>";
-      }
+
       return (
         <div
           key={item.i}
@@ -170,7 +168,7 @@ class TileFieldComponent extends React.Component {
                 />
               </div>
               <div className="tilefield__clear" />
-              <div className="tilefield__previewcontent">{bob}{item.p}</div>
+              <div className="tilefield__previewcontent"><div className={`tilePublisState${item.d}`}>[{item.d}]</div>{item.p}</div>
             </div>
           )}
 

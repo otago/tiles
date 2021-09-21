@@ -131,7 +131,7 @@ class TileFieldComponent extends React.Component {
     let _self = this;
     return this.state.items.map(function(item) {
       if (item.d) {
-        bob = "<div className=\"tileRed\">[DRAFT]</div>"
+        bob = "<div className=\"tileRed\">[DRAFT]</div>";
       }
       return (
         <div

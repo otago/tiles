@@ -55,8 +55,5 @@
     "plugins": [
       "transform-object-rest-spread"
     ]
-  },
-  "engines": {
-    "node": "^10.x"
   }
 }

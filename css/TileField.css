@@ -104,6 +104,13 @@
 	cursor: -webkit-grabbing;
 }
 
+.tilePublishStateDraft{
+    color:red;
+}
+.tilePublishStateLive{
+    display: none;
+}
+
 .react-grid-item > .react-resizable-handle {
 	position: absolute;
 	width: 20px;

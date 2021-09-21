@@ -336,7 +336,12 @@ class Tile extends DataObject
         $draftVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::DRAFT, $this->ID);
         $liveVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::LIVE, $this->ID);
 
-        return $draftVersion && $draftVersion != $liveVersion;
+        if ($draftVersion && $draftVersion != $liveVersion) {
+            return "Draft";
+        } else {
+            return "Live";
+        }
+        //return "ssssssssss";
 
     }
 

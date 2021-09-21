@@ -168,7 +168,7 @@ class TileFieldComponent extends React.Component {
                 />
               </div>
               <div className="tilefield__clear" />
-              <div className="tilefield__previewcontent"><div className={`tilePublisState${item.d}`}>[{item.d}]</div>{item.p}</div>
+              <div className="tilefield__previewcontent"><div className={`tilePublishState${item.d}`}>[{item.d}]</div>{item.p}</div>
             </div>
           )}
 

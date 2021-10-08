@@ -15,6 +15,7 @@ It also comes with some basic tiles out of the box.
 Run this in your command line:
 ```
 composer require otago/tiles
+
 ```
 
 To expose the modules resouces:
@@ -22,6 +23,7 @@ To expose the modules resouces:
 ```
 composer vendor-expose
 ```
+
 
 The module requires [elemental blocks](https://github.com/dnadesign/silverstripe-elemental). If you don't have this module, you'll be prompted on install.
 

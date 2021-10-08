@@ -1,6 +1,6 @@
 import { render } from 'react-dom';
 import Injector from 'lib/Injector';
-import TileFieldComponent from 'components/TileFieldComponent';
+import TileFieldComponent from './components/TileFieldComponent';
 import React from 'react';
 
 /**

@@ -7,6 +7,9 @@
 	 data-disabled="$isDisabled()"
 	 data-name="$Name"
 	 data-rows="$Rows"
-	 data-rows-enabled="$RowsEnabled">
-
+	 data-rows-enabled="$RowsEnabled"
+     data-can-edit="$canEdit()"
+     data-can-view="true"
+     data-attributes="$AttributesJson()"
+     >
 </div>

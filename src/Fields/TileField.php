@@ -2,38 +2,50 @@
 
 namespace OP\Fields;
 
-use SilverStripe\Forms\FormField;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\View\Requirements;
-use SilverStripe\Control\Controller;
-use SilverStripe\ORM\SS_List;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use function GuzzleHttp\json_encode;
 use OP\Forms\TileFieldDetailForm;
 use OP\Models\Tile;
-use Exception;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\SS_List;
+use SilverStripe\View\Requirements;
 
 /**
- * 
- * Creates a reorderable 2D tile field. used in elemental
+ *
+ * Creates a reorderable 2D tile field. For example:
+ * <code>
+ *  private static $has_many = [
+ *     'Tiles' => Tile::class
+ *  ];
+ *  private static $owns = [
+ *      'Tiles'
+ *  ];
+ *
+ *     function getCMSFields() {
+ *      $fields = parent::getCMSFields();
+ *      $fields->addFieldToTab('Root.Main', TileField::create('Tiles', 'Tiles', $this->Tiles()));
+ *  }
+ * </code>
  */
-class TileField extends GridField {
-
+class TileField extends GridField
+{
     private static $allowed_actions = array(
-        'delete'
+        'delete',
     );
     private static $url_handlers = [
-        'delete/$Action' => 'delete'
+        'delete/$Action' => 'delete',
     ];
+
     protected $widthholder = null;
     protected $defaultrows = 4;
-    protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_STRING;
-    protected $schemaComponent = 'TileField';
 
     /**
      * The list of avalible items to select from
@@ -49,7 +61,8 @@ class TileField extends GridField {
      * @param SS_List $selectionlist if you want to restrict the types of tiles. if null it will display all
      * @param DataObject $widthholder - if set, this object will be saved with the number of rows
      */
-    public function __construct($name, $title = null, SS_List $dataList = null, $selectionlist = null, DataObject $widthholder = null) {
+    public function __construct($name, $title = null, SS_List $dataList = null, $selectionlist = null, DataObject $widthholder = null)
+    {
         $this->selectionlist = $selectionlist;
         $this->widthholder = $widthholder;
 
@@ -63,21 +76,8 @@ class TileField extends GridField {
         // style and react js
         Requirements::css('otago/tiles: css/TileField.css');
         Requirements::javascript('otago/tiles: client/dist/js/bundle.js');
-    }
-
-    public function getSchemaData() {
-        $state = [
-            'List' => $this->getDataListJson(),
-            'AvalibleTypes' => $this->getTileTypesJson(),
-            'Disabled' => $this->isDisabled(),
-            'Rows' => $this->Rows,
-            'RowsEnabled' => $this->RowsEnabled(),
-            'Addurl' => $this->getAddURL(),
-            'Editurl' => $this->getEditURL(),
-            'Deleteurl' => $this->getDeleteURL(),
-        ];
-
-        return array_merge(parent::getSchemaData(), $state);
+        Requirements::css('symbiote/silverstripe-gridfieldextensions:css/GridFieldExtensions.css');
+        Requirements::javascript('symbiote/silverstripe-gridfieldextensions:javascript/GridFieldExtensions.js');
     }
 
     /**
@@ -86,7 +86,8 @@ class TileField extends GridField {
      * @return HTTP
      * @throws \SilverStripe\Control\HTTPResponse_Exception
      */
-    public function delete(HTTPRequest $request) {
+    public function delete(HTTPRequest $request)
+    {
         $tileid = $request->latestParam('Action');
         $mytile = Tile::get()->byID($tileid);
         if ($mytile) {
@@ -101,7 +102,8 @@ class TileField extends GridField {
      * @param type $properties
      * @return type
      */
-    public function FieldHolder($properties = array()) {
+    public function FieldHolder($properties = array())
+    {
         return FormField::FieldHolder($properties);
     }
 
@@ -109,7 +111,8 @@ class TileField extends GridField {
      * returns a list of palatable dataobjects used for the template render
      * @return \ArrayList
      */
-    public function Options() {
+    public function Options()
+    {
         return Tile::get()->filter(array('ParentID' => $this->form->getRecord()->ID, 'Name' => $this->name));
     }
 
@@ -118,7 +121,8 @@ class TileField extends GridField {
      * @param type $properties an array of values to decorate the field
      * @return type a rendered template
      */
-    function Field($properties = array()) {
+    public function Field($properties = array())
+    {
         $obj = ($properties) ? $this->customise($properties) : $this;
         $obj->Options = $this->Options();
         $tmp = $obj->renderWith('TileField');
@@ -129,7 +133,8 @@ class TileField extends GridField {
      * will return the link that is used to create new tile objects
      * @return string url
      */
-    public function getAddURL() {
+    public function getAddURL()
+    {
         return Controller::join_links($this->Link(), 'item', 'new');
     }
 
@@ -137,7 +142,8 @@ class TileField extends GridField {
      * will return the link that is used to edit tile objects
      * @return string url
      */
-    public function getEditURL() {
+    public function getEditURL()
+    {
         return Controller::join_links($this->Link(), 'item', 'ID', 'edit');
     }
 
@@ -145,7 +151,8 @@ class TileField extends GridField {
      * will return the link that is used to remove tile objects
      * @return string url
      */
-    public function getDeleteURL() {
+    public function getDeleteURL()
+    {
         return Controller::join_links($this->Link(), 'delete', 'ID');
     }
 
@@ -155,7 +162,8 @@ class TileField extends GridField {
      * @param HTTPRequest $request
      * @return html
      */
-    public function handleRequest(HTTPRequest $request) {
+    public function handleRequest(HTTPRequest $request)
+    {
         if ($request->requestVar('TileType')) {
             $record = Injector::inst()->create(str_replace('_', '\\', $request->requestVar('TileType')));
             $this->setModelClass($record->ClassName);
@@ -174,7 +182,8 @@ class TileField extends GridField {
      * get file types
      * @return \ArrayList
      */
-    public function getTileTypes() {
+    public function getTileTypes()
+    {
         if ($this->selectionlist) {
             return $this->selectionlist;
         }
@@ -200,7 +209,8 @@ class TileField extends GridField {
      * tiles we're allowed to create
      * @return json
      */
-    public function getTileTypesJson() {
+    public function getTileTypesJson()
+    {
         $retarray = array();
         foreach ($this->getTileTypes() as $item) {
             $retarray[] = array(
@@ -213,10 +223,11 @@ class TileField extends GridField {
     }
 
     /**
-     * return the number of rows 
+     * return the number of rows
      * @return int
      */
-    public function getRows() {
+    public function getRows()
+    {
         if ($this->widthholder) {
             return $this->widthholder->Rows ?: $this->defaultrows;
         }
@@ -227,11 +238,9 @@ class TileField extends GridField {
      * a list of items inside this area. mapped to react-grid-layout
      * @return json
      */
-    public function getDataListJson() {
+    public function getDataListJson()
+    {
         $retarray = array();
-        if (!$this->list) {
-            throw new Exception('Invalid list');
-        }
         foreach ($this->list as $item) {
             if ($item instanceof DataObject && $item->hasMethod('generateRawArray')) {
                 $retarray[] = $item->generateRawArray();
@@ -247,17 +256,10 @@ class TileField extends GridField {
      * @param type $data
      * @return $this
      */
-    public function setValue($value, $data = null) {
+    public function setValue($value, $data = null)
+    {
         parent::setValue($value, $data);
 
-        if(is_string($value)) {
-            $json = json_decode($value, true);
-            foreach($json as $tile) {
-                $mytile = Tile::get()->byId($tile['i']);
-                $mytile->writeRawArray($tile);
-            }
-        }
-        
         if (is_array($data) && array_key_exists($this->name, $data) && array_key_exists('GridLayout', $data[$this->name])) {
             if (isset($data[$this->name]['GridLayout'])) {
                 $updatedtiles = $data[$this->name]['GridLayout'];
@@ -284,8 +286,45 @@ class TileField extends GridField {
         return $this;
     }
 
-    public function RowsEnabled() {
+    public function RowsEnabled()
+    {
         return $this->widthholder instanceof DataObject;
     }
 
+    public function getAttributesJson()
+    {
+        return json_encode($this->getAttributes());
+    }
+
+    /**
+     * Allows customization through an 'updateAttributes' hook on the base class.
+     * Existing attributes are passed in as the first argument and can be manipulated,
+     * but any attributes added through a subclass implementation won't be included.
+     *
+     * @return array
+     */
+    public function getAttributes()
+    {
+        $attributes = array(
+            'type' => $this->getInputType(),
+            'name' => $this->getName(),
+            'value' => $this->Value(),
+            'class' => $this->extraClass(),
+            'id' => $this->ID(),
+            'disabled' => $this->isDisabled(),
+            'readonly' => $this->isReadonly(),
+            'autofocus' => $this->isAutofocus(),
+        );
+
+        if ($this->Required()) {
+            $attributes['required'] = 'required';
+            $attributes['aria-required'] = 'true';
+        }
+
+        $attributes = array_merge($attributes, $this->attributes);
+
+        $this->extend('updateAttributes', $attributes);
+
+        return $attributes;
+    }
 }

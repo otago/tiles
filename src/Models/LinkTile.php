@@ -28,7 +28,6 @@ class LinkTile extends Tile {
         'Image' => Image::class,
         'Tree' => SiteTree::class
     ];
-    
     private static $owns = [
         'Image'
     ];
@@ -57,14 +56,18 @@ class LinkTile extends Tile {
     }
 
     public function getPreviewImage() {
-        if ($this->Tree && $this->Tree()->Title) {
+        if (!$this->Image()->ThumbnailURL(230, 170)) {
             return null;
         }
         return $this->Image()->ThumbnailURL(230, 170);
     }
 
-
     public function getPreviewContent() {
+        if($this->URL != "")
+        {
+            return DBField::create_field(DBHTMLText::class, $this->Title." ".$this->URL)->LimitCharacters(150);
+        }
+
         if (!$this->Tree()) {
             return '';
         }

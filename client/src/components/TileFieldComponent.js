@@ -1,6 +1,6 @@
 import React from 'react';
 import GridLayout from 'react-grid-layout';
-import 'whatwg-fetch';
+//import 'whatwg-fetch';
 import PropTypes from 'prop-types';
 
 class TileFieldComponent extends React.Component {

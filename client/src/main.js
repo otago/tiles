@@ -20,10 +20,10 @@ Injector.ready(() => {
 				let list = JSON.parse(this[0].getAttribute('data-list'));
 				let editurl = this[0].getAttribute('data-editurl');
 				let deleteurl = this[0].getAttribute('data-deleteurl');
-				let disabled = this[0].getAttribute('data-disabled');
+				let disabled = this[0].getAttribute('data-disabled') ? true: false;
 				let name = this[0].getAttribute('data-name');
-				let rows = this[0].getAttribute('data-rows');
-				let rowsenabled = this[0].getAttribute('data-rows-enabled');
+				let rows = parseInt(this[0].getAttribute('data-rows'));
+				let rowsenabled = this[0].getAttribute('data-rows-enabled') ? true: false;
 
 				render(<TileFieldComponent 
 							tiletypes={tiletypes}

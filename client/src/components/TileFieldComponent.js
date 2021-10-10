@@ -52,9 +52,9 @@ class TileFieldComponent extends React.Component {
 	// you can either have an image or some text as a preview for a tile
 	PreviewThumbnail(item) {
 		if(item.img) {
-			return {'background-image':'url('+item.img+')'};
+			return {'backgroundImage':'url('+item.img+')'};
 		}
-		return {'background-color':item.c};
+		return {'backgroundColor':item.c};
 	}
 	
 	// we use ajax to remove tiles. this function checks the response to make sure it's ok
@@ -182,7 +182,7 @@ class TileFieldComponent extends React.Component {
 					<div className="form-group field">
 						<div className="form__field-holder">
 							<select className="tilefield__selectholder no-change-track" onChange={this.onSelectChanged}>
-								<option value="" selected>Select new tile type</option>
+								<option value="" >Select new tile type</option>
 								{this.props.tiletypes.map(item => {
 									return (<option value={item.title} className="no-change-track" key={item.title}>{item.name}</option>);
 								})}

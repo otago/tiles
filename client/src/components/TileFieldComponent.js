@@ -136,6 +136,7 @@ class TileFieldComponent extends React.Component {
 					callback[i].n = this.state.items[n].n;
 					callback[i].p = this.state.items[n].p;
 					callback[i].c = this.state.items[n].c;
+					callback[i].d = this.state.items[n].d;
 					callback[i].img = this.state.items[n].img;
 					callback[i].disabled = this.state.items[n].disabled;
 				}

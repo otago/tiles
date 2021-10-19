@@ -116,7 +116,7 @@ class TileFieldComponent extends React.Component {
 									</div>
 									<div className='tilefield__clear'></div>
 									<div className='tilefield__previewcontent'>
-										{item.p}
+										<div className={`tilePublishState${item.d}`}>[{item.d}]</div>{item.p}
 									</div>
 								</div>
 							<input type="hidden" name={`Tiles[GridLayout][${item.i}][x]`} value={item.x} className="hidden form-group--no-label"/>

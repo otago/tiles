@@ -1,43 +1,25 @@
-const Path = require('path');
-// Import the core config
-const webpackConfig = require('@silverstripe/webpack-config');
-const {
-  resolveJS,
-  externalJS,
-  moduleJS,
-  pluginJS,
-  moduleCSS,
-  pluginCSS,
-} = webpackConfig;
+const path = require('path');
 
-const ENV = process.env.NODE_ENV;
-const PATHS = {
-  MODULES: 'node_modules',
-  FILES_PATH: '../',
-  ROOT: Path.resolve(),
-  SRC: Path.resolve('client/src'),
-  DIST: Path.resolve('client/dist'),
-};
-
-const config = [
-  {
-    name: 'js',
-    entry: {
-      bundle: `${PATHS.SRC}/main.js`,
+module.exports = {
+    mode: 'development',
+    devtool: 'eval-source-map',
+    entry: './client/src/main.js',
+    externals: {
+        'lib/Injector': 'Injector'
     },
     output: {
-      path: PATHS.DIST,
-      filename: 'js/[name].js',
+        path: path.resolve(__dirname, 'client/dist/js'),
+        filename: 'bundle.js'
     },
-    devtool: (ENV !== 'production') ? 'source-map' : '',
-    resolve: resolveJS(ENV, PATHS),
-    externals: externalJS(ENV, PATHS),
-    module: moduleJS(ENV, PATHS),
-    plugins: pluginJS(ENV, PATHS),
-  }
-];
-
-// Use WEBPACK_CHILD=js or WEBPACK_CHILD=css env var to run a single config
-module.exports = (process.env.WEBPACK_CHILD)
-  ? config.find((entry) => entry.name === process.env.WEBPACK_CHILD)
-  : module.exports = config;
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            }
+        ]
+    }
+};

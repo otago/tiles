@@ -1,19 +1,10 @@
-<div class="tile">
-<div class="tile__$CSSName tile__size$getSize <% if $Color %>$Color<% end_if %>">
-	<ul>
-	<% loop Images %>
+<div class="tile tile-{$Width}x{$Height} tile__row-$Row tile__col-$Col">
+<div class="tile__$CSSName <% if $Color %>$Color<% end_if %>">
+	<ul class="tile__gallerytilecontainer">
+	<% loop Slides %>
 	<li class="imageContainer <% if $First %>first<% else %>mid<% end_if %><% if $VideoURL %> videotile<% end_if %>" <% if $First %><% else %>style="display:none"<% end_if %>>
 		<% if $LinkURL %><a href="$LinkURL" target="_blank" <% if $VideoURL %>class="openintile"<% end_if %>><% end_if %>
-		
-        <% if $Up.Size = 3x2 %>
-            $Me.croppedImage(710, 430)
-        <% end_if %>
-        <% if $Up.Size = 2x2 %>
-            $Me.croppedImage(469, 430)
-        <% end_if %>
-        <% if $Up.Size = 1x1 %>
-            $Me.croppedImage(230, 210)
-        <% end_if %>
+		$Image.Fill(230, 430)
 		<% if $LinkURL %></a><% end_if %>
 	</li>
 	<% end_loop %>

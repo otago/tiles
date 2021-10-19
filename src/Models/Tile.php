@@ -341,8 +341,6 @@ class Tile extends DataObject
         } else {
             return "Live";
         }
-        //return "ssssssssss";
-
     }
 
     /**

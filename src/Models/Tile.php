@@ -332,6 +332,17 @@ class Tile extends DataObject
         $this->write();
     }
 
+    public function isDraft(){
+        $draftVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::DRAFT, $this->ID);
+        $liveVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::LIVE, $this->ID);
+
+        if ($draftVersion && $draftVersion != $liveVersion) {
+            return "Draft";
+        } else {
+            return "Live";
+        }
+    }
+
     /**
      * takes in position x and y, and saves it
      * @param array $data
@@ -349,6 +360,7 @@ class Tile extends DataObject
             'maxH' => $this->getMaxHeight(),
             'c' => $this->getTileColor(),
             'p' => $this->getPreviewContent(),
+            'd' => $this->isDraft(),
             'img' => $this->getPreviewImage(),
             'disabled' => $this->Disabled,
             'canView' => $this->canView(),

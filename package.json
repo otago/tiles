@@ -1,5 +1,5 @@
 {
-    "name": "otago tiles",
+    "name": "otagotiles",
     "description": "allows users to edit tiles in the CMS.",
     "version": "1.0.0",
     "scripts": {
@@ -19,6 +19,6 @@
         "@babel/preset-react": "^7.0.0",
         "babel-loader": "^8.0.5",
         "webpack": "^5.58.1",
-        "webpack-cli": "^4.9.0"
+        "webpack-cli": "^4.9.1"
     }
 }

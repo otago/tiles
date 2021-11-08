@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Creates a tile element
  * @author torleif west <torleifw@op.ac.nz>
  */
+
 namespace OP\Elements;
 
 use SilverStripe\ORM\ArrayList;
@@ -11,7 +13,8 @@ use OP\Fields\TileField;
 use OP\Models\Tile;
 use SilverStripe\Security\Security;
 
-class TileElement extends BaseElement {
+class TileElement extends BaseElement
+{
 
     private static $singular_name = 'Tile';
     private static $plural_name = 'Tiles';
@@ -29,10 +32,11 @@ class TileElement extends BaseElement {
         'Tiles',
     ];
     private static $table_name = 'TileElement';
-    
+
     private static $inline_editable = false;
 
-    public function getCMSFields() {
+    public function getCMSFields()
+    {
         $fields = parent::getCMSFields();
         $fields->removeByName(['Rows', 'Tiles']);
 
@@ -44,24 +48,25 @@ class TileElement extends BaseElement {
         $fields->addFieldToTab('Root.Main', $tilefield);
         return $fields;
     }
-    
-    public function getType() {
+
+    public function getType()
+    {
         return 'Tiles';
     }
-    
-    public function SortedTiles () {
+
+    public function SortedTiles()
+    {
         $retarray = [];
-        
+
         foreach ($this->Tiles() as $tile) {
-            if(!$tile->canView(Security::getCurrentUser())) {
+            if (!$tile->canView(Security::getCurrentUser())) {
                 continue;
             }
             $sort = ($tile->Row * 1000) + $tile->Col;
             $tile->Sort = $sort;
             $retarray[$sort] = $tile;
         }
-        
+
         return ArrayList::create($retarray)->Sort('Sort');
     }
-
 }

@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Creates a tile element
+ * @author torleif west <torleifw@op.ac.nz>
+ */
 namespace OP\Elements;
 
 use SilverStripe\ORM\ArrayList;
@@ -26,6 +29,8 @@ class TileElement extends BaseElement {
         'Tiles',
     ];
     private static $table_name = 'TileElement';
+    
+    private static $inline_editable = false;
 
     public function getCMSFields() {
         $fields = parent::getCMSFields();

@@ -154,7 +154,6 @@ class Tile extends DataObject
                 $fields->removeByName('ViewerGroups');
             }
         }
-        $this->extend('updateSettingsFields', $fields);
 
         return $fields;
     }

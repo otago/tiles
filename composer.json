@@ -1,24 +1,27 @@
 {
-	"name": "otago/tiles",
-	"description": "Tile CMS field",
-	"type": "silverstripe-vendormodule",
-	"keywords": ["silverstripe", "Tiles", "CMS Field"],
-	"license": "BSD-3-Clause",
-	"require": {
-        "silverstripe/vendor-plugin": "^1.0",
-        "dnadesign/silverstripe-elemental": "^4.0",
-        "silverstripe/framework": "~4.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "OP\\": "src/",
-            "OP\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "expose": [
-            "client/dist",
-            "css"
-        ]
+  "name": "otago/tiles",
+  "description": "Tile CMS field",
+  "type": "silverstripe-vendormodule",
+  "keywords": [
+    "silverstripe",
+    "Tiles",
+    "CMS Field"
+  ],
+  "license": "BSD-3-Clause",
+  "require": {
+    "dnadesign/silverstripe-elemental": "^5",
+    "silverstripe/framework": "~5"
+  },
+  "autoload": {
+    "psr-4": {
+      "OP\\": "src/",
+      "OP\\Tests\\": "tests/"
     }
+  },
+  "extra": {
+    "expose": [
+      "client/dist",
+      "css"
+    ]
+  }
 }

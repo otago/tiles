@@ -74,10 +74,10 @@ class TileField extends GridField
         parent::__construct($name, $title, $dataList, $conf);
 
         // style and react js
-        Requirements::css('otago/tiles: css/TileField.css');
-        Requirements::javascript('otago/tiles: client/dist/js/bundle.js');
-        Requirements::css('symbiote/silverstripe-gridfieldextensions:css/GridFieldExtensions.css');
-        Requirements::javascript('symbiote/silverstripe-gridfieldextensions:javascript/GridFieldExtensions.js');
+        // Requirements::css('otago/tiles: css/TileField.css');
+        // Requirements::javascript('otago/tiles: client/dist/js/bundle.js');
+        // Requirements::css('symbiote/silverstripe-gridfieldextensions:css/GridFieldExtensions.css');
+        // Requirements::javascript('symbiote/silverstripe-gridfieldextensions:javascript/GridFieldExtensions.js');
     }
 
     /**

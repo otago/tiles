@@ -9,8 +9,8 @@
   ],
   "license": "BSD-3-Clause",
   "require": {
-    "dnadesign/silverstripe-elemental": "^5",
-    "silverstripe/framework": "~5"
+    "dnadesign/silverstripe-elemental": "*",
+    "silverstripe/framework": "~6"
   },
   "autoload": {
     "psr-4": {

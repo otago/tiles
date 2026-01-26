@@ -3,7 +3,7 @@
 namespace OP\Forms;
 
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator\RequiredFields;
 
 /**
  * This detail form is used to insert a hidden type field when creating a new 
@@ -28,7 +28,7 @@ class TileFieldDetailForm extends GridFieldDetailForm {
 	}
 
 	public function getValidator() {
-		return new RequiredFields([]);
+		return new RequiredFieldsValidator([]);
 	}
 
 }

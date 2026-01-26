@@ -7,7 +7,7 @@
 
 namespace OP\Elements;
 
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use DNADesign\Elemental\Models\BaseElement;
 use OP\Fields\TileField;
 use OP\Models\Tile;

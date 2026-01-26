@@ -2,7 +2,6 @@
 
 namespace OP\Fields;
 
-use function GuzzleHttp\json_encode;
 use OP\Forms\TileFieldDetailForm;
 use OP\Models\Tile;
 use SilverStripe\Control\Controller;
@@ -13,9 +12,9 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 use SilverStripe\View\Requirements;
 
 /**
@@ -72,12 +71,6 @@ class TileField extends GridField
         $conf->addComponent(new TileFieldDetailForm('DetailForm', Tile::class));
 
         parent::__construct($name, $title, $dataList, $conf);
-
-        // style and react js
-        // Requirements::css('otago/tiles: css/TileField.css');
-        // Requirements::javascript('otago/tiles: client/dist/js/bundle.js');
-        // Requirements::css('symbiote/silverstripe-gridfieldextensions:css/GridFieldExtensions.css');
-        // Requirements::javascript('symbiote/silverstripe-gridfieldextensions:javascript/GridFieldExtensions.js');
     }
 
     /**
@@ -308,7 +301,7 @@ class TileField extends GridField
         $attributes = array(
             'type' => $this->getInputType(),
             'name' => $this->getName(),
-            'value' => $this->Value(),
+            'value' => $this->getValue(),
             'class' => $this->extraClass(),
             'id' => $this->ID(),
             'disabled' => $this->isDisabled(),

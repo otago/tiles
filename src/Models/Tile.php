@@ -20,6 +20,7 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\Core\Validation\ValidationResult;
 
 /**
  *
@@ -163,7 +164,7 @@ class Tile extends DataObject
      * render the tile
      * @return type
      */
-    public function forTemplate()
+    public function forTemplate(): string
     {
         $shortname = (new \ReflectionClass($this))->getShortName();
         return $this->renderWith(array('Tiles/' . $shortname, $shortname));
@@ -183,7 +184,7 @@ class Tile extends DataObject
      * Validates the tile data object
      * @return A {@link ValidationResult} object
      */
-    public function validate()
+    public function validate(): ValidationResult
     {
         $result = parent::validate();
 

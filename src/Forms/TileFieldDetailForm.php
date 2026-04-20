@@ -3,7 +3,7 @@
 namespace OP\Forms;
 
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\Validation\RequiredFieldsValidator\RequiredFields;
+use SilverStripe\Forms\Validation\RequiredFieldsValidator;
 
 /**
  * This detail form is used to insert a hidden type field when creating a new 

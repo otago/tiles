@@ -5,6 +5,7 @@ namespace OP\Models;
 use OP\Elements\TileElement;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\ListboxField;
@@ -73,8 +74,11 @@ class Tile extends DataObject
     {
         $fields = FieldList::create();
         $fields->push(new TabSet("Root", $mainTab = new Tab("Main")));
-        $fields->addFieldsToTab('Root.Main', CheckboxField::create('Disabled', 'Disabled'));
-        $fields->addFieldsToTab('Root.Main', HTMLEditorField::create('Content', 'Content'));
+        $fields->addFieldsToTab('Root.Main', [
+            CheckboxField::create('Disabled', 'Disabled'),
+            HTMLEditorField::create('Content', 'Content')
+        ]);
+
 
         if (class_exists(\OP\ColorField::class)) {
             $fields->addFieldToTab('Root.Main', \OP\ColorField::create('Color', 'Color Override', $this->Color), 'Content');
@@ -82,7 +86,7 @@ class Tile extends DataObject
             $fields->addFieldToTab('Root.Main', TextField::create('Color', 'Color Override'), 'Content');
         }
 
-        $fields->addFieldsToTab('Root.Settings', $this->getSettingsFields());
+        $fields->addFieldToTab('Root.Settings', $this->getSettingsFields());
 
         $this->extend('updateCMSFields', $fields);
 
@@ -131,7 +135,7 @@ class Tile extends DataObject
         }
         asort($groupsMap);
 
-        $fields = FieldList::create(array(
+        $fields = FieldGroup::create(array(
             $viewersOptionsField = new OptionsetField(
                 "CanViewType", _t('Tile.ACCESSHEADER', "Who can view this tile?")
             ),
@@ -218,11 +222,11 @@ class Tile extends DataObject
      * - "CanViewType" directive is set to "LoggedInUsers" and no user is logged in
      * - "CanViewType" directive is set to "OnlyTheseUsers" and user is not in the given groups
      *
+     * @param Member|int|null $member
+     * @return boolean True if the current user can view this page.
      * @uses DataExtension->canView()
      * @uses ViewerGroups()
      *
-     * @param Member|int|null $member
-     * @return boolean True if the current user can view this page.
      */
     public function canView($member = null)
     {
@@ -287,7 +291,7 @@ class Tile extends DataObject
         }
 
         // fail if type === Inherit & member cannot edit parent
-        if ($this->ParentID  && $this->Parent()->exists()) {
+        if ($this->ParentID && $this->Parent()->exists()) {
             return DataObject::get_by_id(TileElement::class, $this->ParentID)->canEdit($member);
         }
         // sweet you passed all the checks, proceed
@@ -319,21 +323,22 @@ class Tile extends DataObject
     public function writeRawArray($data)
     {
         if (isset($data['x'])) {
-            $this->Col = (int) $data['x'];
+            $this->Col = (int)$data['x'];
         }
         if (isset($data['y'])) {
-            $this->Row = (int) $data['y'];
+            $this->Row = (int)$data['y'];
         }
         if (isset($data['w'])) {
-            $this->Width = (int) $data['w'];
+            $this->Width = (int)$data['w'];
         }
         if (isset($data['h'])) {
-            $this->Height = (int) $data['h'];
+            $this->Height = (int)$data['h'];
         }
         $this->write();
     }
 
-    public function isDraft(){
+    public function isDraft()
+    {
         $draftVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::DRAFT, $this->ID);
         $liveVersion = Versioned::get_versionnumber_by_stage(Tile::class, Versioned::LIVE, $this->ID);
 
@@ -353,10 +358,10 @@ class Tile extends DataObject
         return array(
             'i' => $this->ID,
             'n' => $this->singular_name(),
-            'x' => (int) $this->Col,
-            'y' => (int) $this->Row,
-            'w' => (int) $this->getWidth(),
-            'h' => (int) $this->getHeight(),
+            'x' => (int)$this->Col,
+            'y' => (int)$this->Row,
+            'w' => (int)$this->getWidth(),
+            'h' => (int)$this->getHeight(),
             'maxW' => $this->getMaxWidth(),
             'maxH' => $this->getMaxHeight(),
             'c' => $this->getTileColor(),
